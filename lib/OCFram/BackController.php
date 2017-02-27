@@ -73,6 +73,6 @@ abstract class BackController extends ApplicationComponent {
 		
 		$this->view = $view;
 		
-		$this->page->setContentFile(__DIR__.'/../../App/'.$this->app->name().'/Modules/'.$this->module.'/Views/'.$this->view.'.php');
+		$this->page->setContentFile(__DIR__.'/../../App/'.$this->app->name().'/Modules/'.$this->module.'/views/'.$this->view.'.php');
 	}
 }
