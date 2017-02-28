@@ -4,6 +4,8 @@
  * User: gstenek
  * Date: 27/02/2017
  * Time: 18:08
+ *
+ * Handles the user of the website
  */
 
 namespace OCFram;

@@ -4,6 +4,8 @@
  * User: gstenek
  * Date: 27/02/2017
  * Time: 16:42
+ *
+ * Builds the DAO
  */
 
 namespace OCFram;

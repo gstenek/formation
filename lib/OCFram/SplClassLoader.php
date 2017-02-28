@@ -4,6 +4,8 @@
  * User: gstenek
  * Date: 27/02/2017
  * Time: 15:43
+ *
+ * Loads the classes automatically
  */
 
 /*

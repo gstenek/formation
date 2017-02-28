@@ -4,6 +4,8 @@
  * User: gstenek
  * Date: 27/02/2017
  * Time: 18:22
+ *
+ * Get the config parameters of the app
  */
 
 namespace OCFram;

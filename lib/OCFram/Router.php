@@ -4,6 +4,9 @@
  * User: gstenek
  * Date: 27/02/2017
  * Time: 16:25
+ *
+ * Get the route corresponding to the asked URL.
+ * Build a list of routs.
  */
 
 namespace OCFram;
@@ -46,7 +49,7 @@ class Router
 						}
 					}
 					
-					// On assigne ce tableau de variables � la route
+					// On assigne ce tableau de variables à la route
 					$route->setVars($listVars);
 				}
 				

@@ -4,6 +4,8 @@
  * User: gstenek
  * Date: 27/02/2017
  * Time: 15:52
+ *
+ * Handle the execution of the script
  */
 
 namespace OCFram;

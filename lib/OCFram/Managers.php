@@ -4,6 +4,8 @@
  * User: gstenek
  * Date: 27/02/2017
  * Time: 16:40
+ *
+ * Handles the managers. Specify the API and DAO used
  */
 
 namespace OCFram;

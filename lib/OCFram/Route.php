@@ -4,6 +4,8 @@
  * User: gstenek
  * Date: 27/02/2017
  * Time: 16:26
+ *
+ * Build an object route with its components
  */
 
 namespace OCFram;

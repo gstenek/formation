@@ -4,11 +4,17 @@
  * User: gstenek
  * Date: 27/02/2017
  * Time: 15:55
+ *
+ * Base class that each controller will inherit
+ *
+ * Executes an action from the Module with the corresponding page Object
+ * to generate the view to the visitor.
  */
 
 namespace OCFram;
 
 abstract class BackController extends ApplicationComponent {
+	
 	protected $action = '';
 	protected $module = '';
 	protected $page = null;

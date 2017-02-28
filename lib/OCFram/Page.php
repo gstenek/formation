@@ -4,6 +4,8 @@
  * User: gstenek
  * Date: 27/02/2017
  * Time: 16:55
+ *
+ * Generates the view from the data sent by the controller with the corresponding layout
  */
 
 namespace OCFram;

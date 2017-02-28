@@ -4,6 +4,9 @@
  * User: gstenek
  * Date: 27/02/2017
  * Time: 16:46
+ *
+ * Base class of entities.
+ *
  */
 
 namespace OCFram;
