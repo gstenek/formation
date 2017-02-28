@@ -19,11 +19,11 @@ abstract class Application {
 	
 	public function __construct()
 	{
-		$this->httpRequest = new HTTPRequest;
-		$this->httpResponse = new HTTPResponse;
+		$this->httpRequest = new HTTPRequest($this);
+		$this->httpResponse = new HTTPResponse($this);
 		$this->name = '';
 		$this->user = new User;
-		$this->config = new Config;
+		$this->config = new Config($this);
 	}
 	
 	public function getController()
@@ -87,5 +87,15 @@ abstract class Application {
 	public function name()
 	{
 		return $this->name;
+	}
+	
+	public function user()
+	{
+		return $this->user;
+	}
+	
+	public function config()
+	{
+		return $this->config;
 	}
 }
