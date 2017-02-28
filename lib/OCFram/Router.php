@@ -27,6 +27,7 @@ class Router
 	
 	public function getRoute($url)
 	{
+		
 		foreach ($this->routes as $route)
 		{
 			// Si la route correspond à l'URL

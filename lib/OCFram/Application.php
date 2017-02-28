@@ -19,6 +19,7 @@ abstract class Application {
 	
 	public function __construct()
 	{
+		
 		$this->httpRequest = new HTTPRequest($this);
 		$this->httpResponse = new HTTPResponse($this);
 		$this->name = '';
@@ -28,6 +29,7 @@ abstract class Application {
 	
 	public function getController()
 	{
+		
 		$router = new Router;
 		
 		$xml = new \DOMDocument;
