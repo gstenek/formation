@@ -40,6 +40,7 @@ class ConnexionController extends BackController
 		$this->app->user()->setAuthenticated(false);
 		
 		// Destroy session
+		session_unset();
 		session_destroy();
 		
 		// Redirect to homepage
