@@ -39,6 +39,9 @@ class ConnexionController extends BackController
 		// Current user no longer authenticated
 		$this->app->user()->setAuthenticated(false);
 		
+		// Destroy session
+		session_destroy();
+		
 		// Redirect to homepage
 		$this->app->httpResponse()->redirect('/');
 	}
