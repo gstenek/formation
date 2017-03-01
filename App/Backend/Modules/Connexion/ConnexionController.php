@@ -33,4 +33,13 @@ class ConnexionController extends BackController
 			}
 		}
 	}
+	
+	public function executeLogout(HTTPRequest $request)
+	{
+		// Current user no longer authenticated
+		$this->app->user()->setAuthenticated(false);
+		
+		// Redirect to homepage
+		$this->app->httpResponse()->redirect('/');
+	}
 }
