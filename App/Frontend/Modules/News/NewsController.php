@@ -76,7 +76,6 @@ class NewsController extends BackController
 				'auteur' => $request->postData('auteur'),
 				'contenu' => $request->postData('contenu')
 			]);
-			var_dump($comment);
 		}
 		else
 		{

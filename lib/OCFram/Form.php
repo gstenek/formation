@@ -22,7 +22,12 @@ class Form
 	public function add(Field $field)
 	{
 		$attr = $field->name(); // On récupère le nom du champ.
-		$field->setValue($this->entity->$attr()); // On assigne la valeur correspondante au champ.
+		if (is_callable([$this->entity,$attr])) {
+			$field->setValue( $this->entity->$attr() ); // On assigne la valeur correspondante au champ.
+		}
+		elseif (isset($_POST[$attr])) {
+			$field->setValue($_POST[$attr]); // On assigne la valeur correspondante au champ.
+		}
 		
 		$this->fields[] = $field; // On ajoute le champ passé en argument à la liste des champs.
 		return $this;

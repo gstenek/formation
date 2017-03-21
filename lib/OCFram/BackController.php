@@ -21,6 +21,7 @@ abstract class BackController extends ApplicationComponent {
 	protected $view = '';
 	protected $managers = null;
 	
+	
 	public function __construct(Application $app, $module, $action)
 	{
 		parent::__construct($app);
@@ -81,4 +82,12 @@ abstract class BackController extends ApplicationComponent {
 		
 		$this->page->setContentFile(__DIR__.'/../../App/'.$this->app->name().'/Modules/'.$this->module.'/Views/'.$this->view.'.php');
 	}
+	
+	/**
+	 * @return null|Managers
+	 */
+	public function managers() {
+		return $this->managers;
+	}
+	
 }

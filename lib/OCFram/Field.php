@@ -17,6 +17,7 @@ abstract class Field
 	protected $name;
 	protected $validators = [];
 	protected $value;
+	protected $type;
 	
 	public function __construct(array $options = [])
 	{
@@ -67,6 +68,11 @@ abstract class Field
 		return $this->value;
 	}
 	
+	public function type()
+	{
+		return $this->type;
+	}
+	
 	public function setLabel($label)
 	{
 		if (is_string($label))
@@ -90,6 +96,14 @@ abstract class Field
 		if (is_string($name))
 		{
 			$this->name = $name;
+		}
+	}
+	
+	public function setType($type)
+	{
+		if (is_string($type))
+		{
+			$this->type = $type;
 		}
 	}
 	

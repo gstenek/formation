@@ -8,8 +8,10 @@
 
 namespace App\Backend\Modules\Connexion;
 
+use FormBuilder\ConnexionFormBuilder;
 use \OCFram\BackController;
 use \OCFram\HTTPRequest;
+use \Entity\Memberc;
 
 class ConnexionController extends BackController
 {
@@ -17,21 +19,31 @@ class ConnexionController extends BackController
 	{
 		$this->page->addVar('title', 'Connexion');
 		
-		if ($request->postExists('login'))
-		{
-			$login = $request->postData('login');
-			$password = $request->postData('password');
+		if ($request->postExists('login')) {
+			$login    = $request->postData( 'login' );
+			$password = $request->postData( 'password' );
 			
-			if ($login == $this->app->config()->get('login') && $password == $this->app->config()->get('pass'))
-			{
-				$this->app->user()->setAuthenticated(true);
-				$this->app->httpResponse()->redirect('.');
+			$manager = $this->managers->getManagerOf( 'Memberc' );
+			$Memberc = $manager->getMembercUsingLogin( $login );
+			
+			if ( $Memberc && $password == $Memberc->password() ) {
+				$this->app->user()->setAuthenticated( true );
+				$this->app->user()->setAttribute( 'Memberc', $Memberc );
+				$this->app->httpResponse()->redirect( '.' );
 			}
-			else
-			{
-				$this->app->user()->setFlash('Le pseudo ou le mot de passe est incorrect.');
+			else {
+				$this->app->user()->setFlash( 'Le pseudo ou le mot de passe est incorrect.' );
 			}
 		}
+		
+		$formBuilder = new ConnexionFormBuilder(new Memberc());
+		$formBuilder->build();
+		
+		$form = $formBuilder->form();
+		
+		$this->page->addVar('form', $form->createView());
+		$this->page->addVar('submit', 'Connexion');
+		$this->page->addVar('action', '');
 	}
 	
 	public function executeLogout(HTTPRequest $request)
@@ -46,4 +58,5 @@ class ConnexionController extends BackController
 		// Redirect to homepage
 		$this->app->httpResponse()->redirect('/');
 	}
+	
 }

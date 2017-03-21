@@ -15,13 +15,13 @@ class StringField extends Field
 	public function buildWidget()
 	{
 		$widget = '';
-		
+		if($this->type == '')$this->type = "text";
 		if (!empty($this->errorMessage))
 		{
 			$widget .= $this->errorMessage.'<br />';
 		}
 		
-		$widget .= '<label>'.$this->label.'</label><input type="text" name="'.$this->name.'"';
+		$widget .= '<label>'.$this->label.'</label><input type="'.$this->type.'" name="'.$this->name.'"';
 		
 		if (!empty($this->value))
 		{
