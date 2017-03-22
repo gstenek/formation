@@ -19,6 +19,7 @@ use \OCFram\StringField;
 use \OCFram\MaxLengthValidator;
 use \OCFram\NotNullValidator;
 use \OCFram\ConfirmValidator;
+use OCFram\StringValidator;
 
 class SubscriptionFormBuilder extends FormBuilder
 {
@@ -56,7 +57,7 @@ class SubscriptionFormBuilder extends FormBuilder
 			],
 		]))
 		
-			->add(new StringField([
+			->add($email = new StringField([
 				'label' => 'Adresse Email',
 				'name' => 'email',
 				'maxLength' => 100,
@@ -74,7 +75,7 @@ class SubscriptionFormBuilder extends FormBuilder
 					'maxLength' => 100,
 					'validators' => [
 						new MaxLengthValidator('Le mail du membre spécifié est trop long (100 caractères maximum)', 100),
-						new ConfirmValidator('Votre confirmation d\'email ne correspond pas à celle entré précédement','email'),
+						new ConfirmValidator('Votre confirmation d\'email ne correspond pas à celle entré précédement',$email),// passer le field
 						new NotNullValidator('Merci de spécifier votre email'),
 						new EmailValidator('Merci de spécifier un email valide')
 					],
@@ -87,11 +88,12 @@ class SubscriptionFormBuilder extends FormBuilder
 						'validators' => [
 							new MaxLengthValidator('Le pseudo du membre spécifié est trop long (50 caractères maximum)', 50),
 							new NotNullValidator('Merci de spécifier le pseudo du membre'),
-							new NotExistValidator('Le login entré est déjà existant',$this->Controller->managers()->getManagerOf('Memberc'),'getMembercUsingLogin')
+							new NotExistValidator('Le login entré est déjà existant',$this->Controller->managers()->getManagerOf('Memberc'),'getMembercUsingLogin'),
+							new StringValidator('La pseudo entré contient des caractères invalides', array('<','$','>','/','^','€'))
 						],
 					]))
 					
-					   ->add(new StringField([
+					   ->add($password = new StringField([
 						   'label' => 'Mot de passe',
 						   'name' => 'password',
 						   'type' => 'password',
@@ -109,7 +111,7 @@ class SubscriptionFormBuilder extends FormBuilder
 								'validators' => [
 									new MaxLengthValidator('La confirmation mot de passe du membre  est trop long (200 caractères maximum)', 200),
 									new NotNullValidator('Merci de confirmer votre mot de passe'),
-									new ConfirmValidator('Votre confirmation de mot de passe ne correspond pas à celui entré précédement','password')
+									new ConfirmValidator('Votre confirmation de mot de passe ne correspond pas à celui entré précédement',$password)
 								],
 							]));
 		

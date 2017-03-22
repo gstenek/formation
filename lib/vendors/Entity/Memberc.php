@@ -31,19 +31,15 @@ class Memberc extends Entity
 	public function __construct( array $donnees = [] ) {
 		$result = [];
 		
-		$fk_column = Memberc::CODE_TABLE.'_fk_';
 		$simple_column = Memberc::CODE_TABLE.'_';
 		foreach ($donnees as $key => $value)
 		{
 			
 			// MMC_fk_MME OR MMC_fk_MME_state OR  MMC_id
-			if(!(strpos($fk_column, $key) === false))
-			{
-				$result[str_replace(Memberc::CODE_TABLE.'_fk_','',$key)] = $value;
-				
-			}elseif(!(strpos($simple_column, $key))){
-					$result[str_replace(Memberc::CODE_TABLE.'_','',$key)] = $value;
-			}else{
+			$newkey = str_replace($simple_column,'',$key);
+			if(!(strlen($newkey) == strlen($key))){
+					$result[$newkey] = $value;
+			}elseif (is_callable([$this,$key])){
 				$result[$key] = $value;
 			}
 			

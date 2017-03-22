@@ -9,27 +9,26 @@ namespace OCFram;
 
 class ConfirmValidator extends Validator
 {
-	protected $fieldname;
+	protected $field;
 	
-	public function __construct($errorMessage, $fieldname)
+	public function __construct($errorMessage,Field $field)
 	{
 		parent::__construct($errorMessage);
 		
-		$this->setField($fieldname);
+		$this->setField($field);
 	}
 	
 	public function isValid($value)
 	{
-		if(isset($_POST[$this->fieldname])){
-			if($value == $_POST[$this->fieldname]) return true;
-		}
-			return false;
+	
+			if($value == $this->field->value()) return true;
+			else return false;
 		
 	}
 	
-	public function setField($fieldname)
+	public function setField(Field $field)
 	{
-		$this->fieldname = $fieldname;
+		$this->field = $field;
 	}
 	
 }

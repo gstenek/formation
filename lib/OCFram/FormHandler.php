@@ -29,7 +29,12 @@ class FormHandler
 			
 			return true;
 		}
-		
+		foreach ( $this->form->Fields() as $field ) {
+			
+			if ( $field->type() == 'password' ) { // s'il s'agit d'un password, on assigne sa valeur à vide
+				$field->setValue( '' );
+			}
+		}
 		return false;
 	}
 	

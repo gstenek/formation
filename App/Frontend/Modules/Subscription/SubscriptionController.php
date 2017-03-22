@@ -12,6 +12,7 @@ use FormBuilder\SubscriptionFormBuilder;
 use \OCFram\BackController;
 use \OCFram\HTTPRequest;
 use \Entity\Memberc;
+use \OCFram\FormHandler;
 
 class SubscriptionController extends BackController
 {
@@ -50,11 +51,10 @@ class SubscriptionController extends BackController
 		
 		$formBuilder = new SubscriptionFormBuilder($Memberc,$this);
 		$formBuilder->build();
-		
 		$form = $formBuilder->form();
 		
 		// On récupère le gestionnaire de formulaire (le paramètre de getManagerOf() est bien entendu à remplacer).
-		$formHandler = new \OCFram\FormHandler($form, $this->managers->getManagerOf('Memberc'), $request);
+		$formHandler = new FormHandler($form, $this->managers->getManagerOf('Memberc'), $request);
 		
 		if ($formHandler->process())
 		{

@@ -16,13 +16,7 @@ class NotExistValidator extends Validator
 	
 	public function isValid($value)
 	{
-		$function = $this->functionname;
-		if(!($this->manager->$function($value)))
-		{
-			return true;
-		}else{
-			return false;
-		}
+		return  !($this->manager->{$this->functionname}($value));
 	}
 	
 	public function setManager($manager)

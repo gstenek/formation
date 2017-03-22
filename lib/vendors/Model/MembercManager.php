@@ -40,6 +40,8 @@ abstract class MembercManager extends Manager{
 	{
 		if ($Memberc->isValid())
 		{
+			$Memberc->setpassword(password_hash($Memberc->password(), PASSWORD_BCRYPT));
+			
 			//$Memberc->isNew() ? $this->insertMemberc($Memberc) : $this->modify($Memberc); // si update prévu
 			$this->insertMemberc($Memberc);
 		}

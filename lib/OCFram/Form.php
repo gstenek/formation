@@ -22,8 +22,9 @@ class Form
 	public function add(Field $field)
 	{
 		$attr = $field->name(); // On récupère le nom du champ.
-		if (is_callable([$this->entity,$attr])) {
-			$field->setValue( $this->entity->$attr() ); // On assigne la valeur correspondante au champ.
+		
+		if (is_callable([$this->entity,$attr])) { // s'il s'agit d'un attribut de l'entité
+			$field->setValue( $this->entity->$attr() ); // On assigne la valeur correspondante au champs
 		}
 		elseif (isset($_POST[$attr])) {
 			$field->setValue($_POST[$attr]); // On assigne la valeur correspondante au champ.
@@ -70,5 +71,12 @@ class Form
 	public function setEntity(Entity $entity)
 	{
 		$this->entity = $entity;
+	}
+	
+	/**
+	 * @return array
+	 */
+	public function Fields(){
+		return $this->fields;
 	}
 }

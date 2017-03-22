@@ -11,9 +11,7 @@
 	<head>
 		<title>
 			<?= isset($title) ? $title : 'Mon super site' ?>
-		</title>
-		
-		<meta charset="utf-8" />
+		</title>		<meta charset="utf-8" />
 		
 		<link rel="stylesheet" href="/css/Envision.css" type="text/css" />
 	</head>
@@ -32,6 +30,9 @@
 						<li><a href="/admin/">Admin</a></li>
 						<li><a href="/admin/news-insert.html">Ajouter une news</a></li>
 						<li><a href="/admin/logout">Se déconnecter</a></li>
+					<?php }else{ ?>
+						<li><a href="/admin/">Se connecter</a></li>
+						<li><a href="/subscription">S'inscrire</a></li>
 					<?php } ?>
 				</ul>
 			</nav>
