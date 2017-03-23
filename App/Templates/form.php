@@ -7,8 +7,9 @@
  */
 ?>
 <h2><?= $title ?></h2>
+<?php if(isset($infos)){echo '<h3>'.$infos.'</h3>';}?>
 
-<form method='POST' action=<?= $action ?> >
+<form <?php if(isset($method)){echo ' method="'.$method.'"';}else{echo 'method="POST"';} echo ' action="'.$action.'" ';?>  >
 	<p>
 		<?= $form ?>
 		

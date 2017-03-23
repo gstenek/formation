@@ -77,4 +77,32 @@ class MembercManagerPDO extends MembercManager {
 		}
 		
 	}
+	
+	/**
+	 * Méthode permettant d'obtenir un member spécifique.
+	 *
+	 * @param $id
+	 *
+	 * @return Memberc
+	 * @internal param L'identifiant du member
+	 *
+	 */
+	public function getMembercUsingId( $id ) {
+		
+		$q = $this->dao->prepare('SELECT MMC_id, MMC_name, MMC_surname, MMC_login, MMC_email,  MMC_password, MMC_dateInscription, MMC_dateBirth FROM t_mem_memberc WHERE MMC_id = :id');
+		$q->bindValue(':id', $id);
+		$q->execute();
+		
+		$q->setFetchMode(\PDO::FETCH_ASSOC | \PDO::FETCH_PROPS_LATE);
+		$result = $q->fetch();
+		
+		if($result == false)
+		{
+			return false;
+		}else{
+			$Memberc = new Memberc($result);
+			return $Memberc;
+		}
+		
+	}
 }

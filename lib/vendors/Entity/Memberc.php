@@ -12,7 +12,6 @@ use \OCFram\Entity;
 
 class Memberc extends Entity
 {
-	
 	protected
 		$name,
 		$surname,
@@ -20,25 +19,39 @@ class Memberc extends Entity
 		$email,
 		$password,
 		$dateInscription,
-		$dateBirth;
+		$dateBirth,
+		$fk_MMY,
+		$fk_MME;
+
 	
 	const NAME_INVALIDE = 1;
 	const SURNAME_INVALIDE = 2;
 	const LOGIN_INVALIDE = 3;
 	const EMAIL_INVALIDE = 4;
+	
 	const CODE_TABLE = 'MMC';
+	
+	const MME_INVALID = 1;
+	const MME_VALID = 2;
+	
+	const MMY_ADMIN = 1;
+	const MMY_BASIC = 2;
 	
 	public function __construct( array $donnees = [] ) {
 		$result = [];
 		
-		$simple_column = Memberc::CODE_TABLE.'_';
+		$simple_column = Self::CODE_TABLE.'_';
 		foreach ($donnees as $key => $value)
 		{
 			
 			// MMC_fk_MME OR MMC_fk_MME_state OR  MMC_id
 			$newkey = str_replace($simple_column,'',$key);
 			if(!(strlen($newkey) == strlen($key))){
+				if(is_callable([$this,$newkey]))
+				{
+					// si le champ n'est pas une classe
 					$result[$newkey] = $value;
+				}
 			}elseif (is_callable([$this,$key])){
 				$result[$key] = $value;
 			}
@@ -201,6 +214,35 @@ class Memberc extends Entity
 	 */
 	public function dateBirth() {
 		return $this->dateBirth;
+	}
+	
+	
+	/**
+	 * @return mixed
+	 */
+	public function fk_MMY() {
+		return $this->fk_MMY;
+	}
+	
+	/**
+	 * @param mixed $fk_MMY
+	 */
+	public function setFk_MMY( $fk_MMY ) {
+		$this->fk_MMY = $fk_MMY;
+	}
+	
+	/**
+	 * @return mixed
+	 */
+	public function fk_MME() {
+		return $this->fk_MME;
+	}
+	
+	/**
+	 * @param mixed $fk_MME
+	 */
+	public function setFk_MME( $fk_MME ) {
+		$this->fk_MME = $fk_MME;
 	}
 	
 	

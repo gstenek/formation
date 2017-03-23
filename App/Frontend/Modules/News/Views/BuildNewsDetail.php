@@ -7,15 +7,15 @@
  * Time: 15:25
  */
 ?>
-<p>Par <em><?= $news['auteur'] ?></em>, le <?= $news['dateAjout']->format('d/m/Y à H\hi') ?></p>
-<h2><?= $news['titre'] ?></h2>
-<p><?= nl2br($news['contenu']) ?></p>
+<p>Par <em><?= $Newg->fk_MMC()->login() ?></em>, le <?= $Newg->fk_NNC()->date_creation()?></p>
+<h2><?= $Newg->title() ?></h2>
+<p><?= nl2br($Newg->content()) ?></p>
 
-<?php if ($news['dateAjout'] != $news['dateModif']) { ?>
-	<p style="text-align: right;"><small><em>Modifiée le <?= $news['dateModif']->format('d/m/Y à H\hi') ?></em></small></p>
+<?php if ($Newg->fk_NNC()->date_creation() != $Newg->date_edition()) { ?>
+	<p style="text-align: right;"><small><em>Modifiée le <?= $Newg->date_edition() ?></em></small></p>
 <?php } ?>
 
-<p><a href="commenter-<?= $news['id'] ?>.html">Ajouter un commentaire</a></p>
+<p><a href="commenter-<?= $Newg->fk_NNC()->id() ?>.html">Ajouter un commentaire</a></p>
 
 <?php
 if (empty($comments))
@@ -42,4 +42,4 @@ foreach ($comments as $comment)
 }
 ?>
 
-<p><a href="commenter-<?= $news['id'] ?>.html">Ajouter un commentaire</a></p>
+<p><a href="commenter-<?= $Newg->fk_NNC()->id() ?>.html">Ajouter un commentaire</a></p>

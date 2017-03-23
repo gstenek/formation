@@ -11,6 +11,7 @@ namespace App\Frontend\Modules\News;
 use \OCFram\BackController;
 use \OCFram\HTTPRequest;
 use \Entity\Comment;
+use \Entity\Newc;
 use \OCFram\Form;
 use \OCFram\StringField;
 use \OCFram\TextField;
@@ -29,20 +30,20 @@ class NewsController extends BackController
 		$this->page->addVar('title', 'Liste des '.$nombreNews.' dernières news');
 		
 		// On récupère le manager des news.
-		$manager = $this->managers->getManagerOf('News');
+		$manager = $this->managers->getManagerOf('Newc');
 		
 		// Cette ligne, vous ne pouviez pas la deviner sachant qu'on n'a pas encore touché au modèle.
 		// Contentez-vous donc d'écrire cette instruction, nous implémenterons la méthode ensuite.
-		$listeNews = $manager->getList(0, $nombreNews);
+		$listeNews = $manager->getNewsListUsingNNE(-1,-1,Newc::NNE_VALID);
 		
 		foreach ($listeNews as $news)
 		{
-			if (strlen($news->contenu()) > $nombreCaracteres)
+			if (strlen($news->content()) > $nombreCaracteres)
 			{
-				$debut = substr($news->contenu(), 0, $nombreCaracteres);
+				$debut = substr($news->content(), 0, $nombreCaracteres);
 				$debut = substr($debut, 0, strrpos($debut, ' ')) . '...';
 				
-				$news->setContenu($debut);
+				$news->setContent($debut);
 			}
 		}
 		
@@ -51,19 +52,19 @@ class NewsController extends BackController
 		$this->page->addVar('listeNews', $listeNews);
 	}
 	
-	public function executeShow(HTTPRequest $request)
+	public function executeBuildNewsDetail(HTTPRequest $request)
 	{
 		
-		$news = $this->managers->getManagerOf('News')->getUnique($request->getData('id'));
+		$Newg = $this->managers->getManagerOf('Newc')->getNewsUsingNewcId($request->getData('id'));
 		
-		if (empty($news))
+		if (empty($Newg))
 		{
 			$this->app->httpResponse()->redirect404();
 		}
 		
-		$this->page->addVar('title', $news->titre());
-		$this->page->addVar('news', $news);
-		$this->page->addVar('comments', $this->managers->getManagerOf('Comments')->getListOf($news->id()));
+		$this->page->addVar('title', $Newg->title());
+		$this->page->addVar('Newg', $Newg);
+		$this->page->addVar('comments', array()/*$this->managers->getManagerOf('Comments')->getListOf($Newg->id())*/);
 	}
 	
 	public function executeInsertComment(HTTPRequest $request)

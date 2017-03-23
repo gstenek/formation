@@ -46,7 +46,9 @@ class SubscriptionController extends BackController
 			'surname' => $request->postData('surname'),
 			'password' => $request->postData('password'),
 			'dateBirth' => date("Y-m-d"),
-			'dateInscription' => date("Y-m-d H:i:s")
+			'dateInscription' => date("Y-m-d H:i:s"),
+			'fk_MMY' => Memberc::MMY_BASIC,
+			'fk_MME' => Memberc::MME_VALID
 		]);
 		
 		$formBuilder = new SubscriptionFormBuilder($Memberc,$this);

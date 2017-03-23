@@ -12,11 +12,13 @@ use \OCFram\Manager;
 use \Entity\Memberc;
 
 abstract class MembercManager extends Manager{
-	
 	/**
 	 * Méthode permettant d'ajouter un member
-	 * @param $member Le member à ajouter
+	 *
+	 * @param Memberc $Memberc
+	 *
 	 * @return void
+	 * @internal param Le $member member à ajouter
 	 */
 	abstract protected function insertMemberc(Memberc $Memberc);
 	
@@ -30,11 +32,25 @@ abstract class MembercManager extends Manager{
 	abstract public function getMembercUsingLogin($login);
 	
 	/**
+	 * Méthode permettant d'obtenir un member spécifique.
+	 *
+	 * @param $id
+	 *
+	 * @return Memberc
+	 * @internal param L'identifiant du member
+	 *
+	 */
+	abstract public function getMembercUsingId($id);
+	
+	/**
 	 * Méthode permettant d'enregistrer un membre.
-	 * @param $news News la news à enregistrer
-	 * @see self::add()
-	 * @see self::modify()
+	 *
+	 * @param Memberc $Memberc
+	 *
 	 * @return void
+	 * @internal param News $news la news à enregistrer
+	 * @see      self::add()
+	 * @see      self::modify()
 	 */
 	public function save(Memberc $Memberc)
 	{
