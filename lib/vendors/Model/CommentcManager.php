@@ -9,27 +9,29 @@
 namespace Model;
 
 use \OCFram\Manager;
-use \Entity\Comment;
+use \Entity\Commentc;
 
-abstract class CommentsManager extends Manager
+abstract class CommentcManager extends Manager
 {
 	/**
 	 * Méthode permettant d'ajouter un commentaire
-	 * @param $comment Le commentaire à ajouter
+	 *
+	 * @param Commentc|Le $Commentc Le commentaire à ajouter
+	 *
 	 * @return void
 	 */
-	abstract protected function add(Comment $comment);
+	abstract protected function insertCommentc(Commentc $Commentc);
 	
 	/**
 	 * Méthode permettant d'enregistrer un commentaire.
-	 * @param $comment Le commentaire à enregistrer
+	 * @param $Commentc Le commentaire à enregistrer
 	 * @return void
 	 */
-	public function save(Comment $comment)
+	public function save(Commentc $Commentc)
 	{
-		if ($comment->isValid())
+		if ($Commentc->isValid())
 		{
-			$comment->isNew() ? $this->add($comment) : $this->modify($comment);
+			$Commentc->isNew() ? $this->insertCommentc($Commentc) : $this->updateCommentc($Commentc);
 		}
 		else
 		{
@@ -39,22 +41,27 @@ abstract class CommentsManager extends Manager
 	
 	/**
 	 * Méthode permettant de récupérer une liste de commentaires.
-	 * @param $news La news sur laquelle on veut récupérer les commentaires
+	 *
+	 * @param $newc_id
+	 *
 	 * @return array
+	 * @internal param La $news news sur laquelle on veut récupérer les commentaires
 	 */
-	abstract public function getListOf($news);
+	abstract public function  getCommentcListUsingNewcId($newc_id);
 	
 	/**
 	 * Méthode permettant de modifier un commentaire.
-	 * @param $comment Le commentaire à modifier
+	 * @param $Commentc Le commentaire à modifier
 	 * @return void
 	 */
-	abstract protected function modify(Comment $comment);
+	abstract protected function updateCommentc(Commentc $Commentc);
 	
 	/**
 	 * Méthode permettant d'obtenir un commentaire spécifique.
+	 *
 	 * @param $id L'identifiant du commentaire
-	 * @return Comment
+	 *
+	 * @return Commentc
 	 */
 	abstract public function get($id);
 	

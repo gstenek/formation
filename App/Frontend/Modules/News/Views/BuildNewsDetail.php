@@ -15,7 +15,7 @@
 	<p style="text-align: right;"><small><em>Modifiée le <?= $Newg->date_edition() ?></em></small></p>
 <?php } ?>
 
-<p><a href="commenter-<?= $Newg->fk_NNC()->id() ?>.html">Ajouter un commentaire</a></p>
+<p><a href="commenter-<?= $Newg['fk_NNC']['id'] ?>.html">Ajouter un commentaire</a></p>
 
 <?php
 if (empty($comments))
@@ -25,18 +25,18 @@ if (empty($comments))
 	<?php
 }
 
-foreach ($comments as $comment)
+foreach ($comments as $Commentc)
 {
 	?>
 	<fieldset>
 		<legend>
-			Posté par <strong><?= htmlspecialchars($comment['auteur']) ?></strong> le <?= $comment['date']->format('d/m/Y à H\hi') ?>
+			Posté par <strong><?= htmlspecialchars($Commentc['visitor']) ?></strong> le <?= $Commentc['date'] ?>
 			<?php if ($user->isAuthenticated()) { ?> -
-				<a href="admin/comment-update-<?= $comment['id'] ?>.html">Modifier</a> |
-				<a href="admin/comment-delete-<?= $comment['id'] ?>.html">Supprimer</a>
+				<a href="admin/comment-update-<?= $Commentc['id'] ?>.html">Modifier</a> |
+				<a href="admin/comment-delete-<?= $Commentc['id'] ?>.html">Supprimer</a>
 			<?php } ?>
 		</legend>
-		<p><?= nl2br(htmlspecialchars($comment['contenu'])) ?></p>
+		<p><?= nl2br(htmlspecialchars($Commentc['content'])) ?></p>
 	</fieldset>
 	<?php
 }

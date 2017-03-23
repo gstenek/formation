@@ -97,6 +97,7 @@ class Newg extends Entity {
 		$this->fk_MMC = $fk_MMC;
 	}
 	
+	
 	/**
 	 * @return mixed
 	 */
@@ -137,6 +138,35 @@ class Newg extends Entity {
 	 */
 	public function setContent( $content ) {
 		$this->content = $content;
+	}
+	
+	/**
+	 * @return Entity|null
+	 */
+	public function Memberc() {
+		return $this->References('Memberc');
+	}
+	
+	/**
+	 * @param Memberc $Memberc
+	 */
+	public function setMemberc( Memberc $Memberc ) {
+		$this->setReferences($Memberc ,'Memberc');
+	}
+	
+	/**
+	 * @return Entity|null
+	 */
+	public function Newg() {
+		return $this->References('Newg');
+	}
+	
+	/**
+	 * @param Newg $Newg
+	 *
+	 */
+	public function setNewg( Newg $Newg) {
+		$this->setReferences($Newg ,'Newg');
 	}
 	
 	

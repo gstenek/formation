@@ -12,13 +12,15 @@
 namespace OCFram;
 
 
+
 abstract class Entity implements \ArrayAccess {
 	
 	// Utilisation du trait Hydrator pour que nos entités puissent être hydratées
 	use Hydrator;
 	
 	protected $erreurs = [],
-		$id;
+		$id,
+		$References = [];
 	
 	public function __construct(array $donnees = [])
 	{
@@ -74,5 +76,27 @@ abstract class Entity implements \ArrayAccess {
 	public function offsetUnset($var)
 	{
 		throw new \Exception('Impossible de supprimer une quelconque valeur');
+	}
+	
+	/**
+	 * @param $name
+	 *
+	 * @return null|Entity
+	 * @internal param Entity $Entity
+	 *
+	 */
+	public function References($name) {
+		return isset($this->References[$name])?$this->References[$name]:null;
+	}
+	
+	/**
+	 * @param Entity $Entity
+	 *
+	 * @param        $name
+	 *
+	 * @internal param Entity $Entity
+	 */
+	public function setReferences( Entity $Entity, $name ) {
+		$this->References[$name] = $Entity;
 	}
 }

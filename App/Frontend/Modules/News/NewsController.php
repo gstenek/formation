@@ -10,7 +10,7 @@ namespace App\Frontend\Modules\News;
 
 use \OCFram\BackController;
 use \OCFram\HTTPRequest;
-use \Entity\Comment;
+use \Entity\Commentc;
 use \Entity\Newc;
 use \OCFram\Form;
 use \OCFram\StringField;
@@ -61,44 +61,64 @@ class NewsController extends BackController
 		{
 			$this->app->httpResponse()->redirect404();
 		}
+		$comments = $this->managers->getManagerOf('Commentc')->getCommentcListUsingNewcId($Newg->fk_NNC()->id());
 		
 		$this->page->addVar('title', $Newg->title());
 		$this->page->addVar('Newg', $Newg);
-		$this->page->addVar('comments', array()/*$this->managers->getManagerOf('Comments')->getListOf($Newg->id())*/);
+		$this->page->addVar('comments', $comments);
 	}
 	
-	public function executeInsertComment(HTTPRequest $request)
+	public function executeBuildCommentForm(HTTPRequest $request)
 	{
-		// Si le formulaire a été envoyé.
-		if ($request->method() == 'POST')
-		{
-			$comment = new Comment([
-				'news' => $request->getData('news'),
-				'auteur' => $request->postData('auteur'),
-				'contenu' => $request->postData('contenu')
-			]);
-		}
-		else
-		{
-			$comment = new Comment;
+		if($request->postData('submit')) {
+			$this->executePutCommentc($request);
+		}else{
+			
+			$formBuilder = new CommentFormBuilder(new Commentc(),$this);
+			$formBuilder->build();
+			
+			$form = $formBuilder->form();
+			
+			$this->page->addVar('title', 'Ajout d\'un commentaire');
+			$this->page->addVar('form', $form->createView());
+			$this->page->addVar('submit', 'Valider');
+			$this->page->addVar('action', '');
 		}
 		
-		$formBuilder = new CommentFormBuilder($comment);
+	}
+	
+	public function executePutCommentc(HTTPRequest $request){
+		$Newg = $this->managers->getManagerOf('Newg')->getNewgValidUsingNewcId($request->getData('news'));
+		$Commentc = new Commentc([
+			'content' => $request->postData('content'),
+			'fk_NCE' => Commentc::NCE_VALID,
+			'date' => date("Y-m-d H:i:s"),
+			'fk_NNG' => $Newg->id()
+		]);
+		if($this->app()->user()->isAuthenticated()){
+			$Commentc->setFk_MMC($this->app()->user()->isAuthenticated()->getAttribute('Memberc')->id());
+		}else{
+			$Commentc->setVisitor($request->postData('visitor'));
+		}
+		
+		$formBuilder = new CommentFormBuilder($Commentc,$this);
 		$formBuilder->build();
-		
 		$form = $formBuilder->form();
 		
 		// On récupère le gestionnaire de formulaire (le paramètre de getManagerOf() est bien entendu à remplacer).
-		$formHandler = new \OCFram\FormHandler($form, $this->managers->getManagerOf('Comments'), $request);
+		$formHandler = new FormHandler($form, $this->managers->getManagerOf('Commentc'), $request);
 		
 		if ($formHandler->process())
 		{
-			$this->app->user()->setFlash('Le commentaire a bien été ajouté, merci !');
+			$this->app->user()->setFlash('Merci pour votre commentaire !');
 			$this->app->httpResponse()->redirect('news-'.$request->getData('news').'.html');
 		}
 		
-		$this->page->addVar('comment', $comment);
-		$this->page->addVar('form', $form->createView());
 		$this->page->addVar('title', 'Ajout d\'un commentaire');
+		$this->page->addVar('form', $form->createView());
+		$this->page->addVar('submit', 'Valider');
+		$this->page->addVar('action', '');
 	}
+
+	
 }

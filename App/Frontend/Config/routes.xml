@@ -2,6 +2,6 @@
 <routes>
 	<route url="/" module="News" action="index" ></route>
 	<route url="/news-([0-9]+)\.html" module="News" action="BuildNewsDetail" vars="id"></route>
-	<route url="/commenter-([0-9]+)\.html" module="News" action="insertComment" vars="news" ></route>
+	<route url="/commenter-([0-9]+)\.html" module="News" action="BuildCommentForm" vars="news" ></route>
 	<route url="/subscription" module="Subscription" action="BuildSubscription"></route>
 </routes>

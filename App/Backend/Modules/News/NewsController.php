@@ -14,7 +14,7 @@ use FormBuilder\NewsFormBuilder;
 use \OCFram\BackController;
 use \OCFram\HTTPRequest;
 use \Entity\News;
-use \Entity\Comment;
+use \Entity\Commentc;
 use \OCFram\FormHandler;
 use FormBuilder\CommentFormBuilder;
 
@@ -144,7 +144,7 @@ class NewsController extends BackController
 		
 		if ($request->method() == 'POST')
 		{
-			$comment = new Comment([
+			$comment = new Commentc([
 				'id' => $request->getData('id'),
 				'auteur' => $request->postData('auteur'),
 				'contenu' => $request->postData('contenu')
