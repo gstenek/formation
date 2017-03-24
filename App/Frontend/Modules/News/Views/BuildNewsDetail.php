@@ -27,10 +27,12 @@ if (empty($comments))
 
 foreach ($comments as $Commentc)
 {
+	//var_dump($Commentc['References']);
+	//var_dump($Commentc->References('Memberc')['login']);
 	?>
 	<fieldset>
 		<legend>
-			Posté par <strong><?= htmlspecialchars($Commentc['visitor']) ?></strong> le <?= $Commentc['date'] ?>
+			Posté par <strong><?= $Commentc['fk_MMC'] === NULL ? htmlspecialchars($Commentc['visitor']) : htmlspecialchars($Commentc->References('Memberc')['login']) ?></strong> le <?= $Commentc['date'] ?>
 			<?php if ($user->isAuthenticated()) { ?> -
 				<a href="admin/comment-update-<?= $Commentc['id'] ?>.html">Modifier</a> |
 				<a href="admin/comment-delete-<?= $Commentc['id'] ?>.html">Supprimer</a>

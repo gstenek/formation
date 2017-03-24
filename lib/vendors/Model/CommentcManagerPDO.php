@@ -9,19 +9,23 @@
 namespace Model;
 
 use \Entity\Commentc;
+use Entity\Memberc;
 
 class CommentcManagerPDO extends CommentcManager
 {
 	public function getCommentcListUsingNewcId($newc_id)
 	{
 		
-		$q = $this->dao->prepare('SELECT NCC_id, NCC_fk_NCE, NCC_fk_MMC, NCC_content, NCC_visitor, NCC_date, NCC_fk_NNG
+		$q = $this->dao->prepare('SELECT NCC_id, NCC_fk_NCE, NCC_fk_MMC, NCC_content, NCC_visitor, NCC_date, NCC_fk_NNG, MMC_login
 									FROM t_new_commentc
 									INNER JOIN t_new_newg ON NCC_fk_NNG = NNG_id
 									INNER JOIN t_new_newc ON NNC_id = NNG_fk_NNC
+									LEFT OUTER JOIN t_mem_memberc ON NCC_fk_MMC = MMC_id
 									WHERE NNC_id = :NNC
+									AND NCC_fk_NCE = :NCE
 									GROUP BY NCC_id');
 		$q->bindValue(':NNC', $newc_id, \PDO::PARAM_INT);
+		$q->bindValue(':NCE', Commentc::NCE_VALID, \PDO::PARAM_INT);
 		$q->execute();
 		
 		$q->setFetchMode(\PDO::FETCH_ASSOC );
@@ -30,8 +34,11 @@ class CommentcManagerPDO extends CommentcManager
 		$Comments = [];
 		foreach ($result as $key => $Commentc)
 		{
-			
-			$Comments[] = new Commentc($Commentc);
+			$Commentc_temp = new Commentc($Commentc);
+			$Memberc = new Memberc($Commentc);
+			$Memberc->setid($Commentc_temp->fk_MMC());
+			$Commentc_temp->setReferences($Memberc, 'Memberc');
+			$Comments[] = $Commentc_temp;
 		}
 		
 		return $Comments;
@@ -84,15 +91,23 @@ class CommentcManagerPDO extends CommentcManager
 		$q->execute();
 	}
 	
-	public function get($id)
+	public function getCommentcUsingCommentcId($commentc_id)
 	{
-		$q = $this->dao->prepare('SELECT id, news, auteur, contenu FROM comments WHERE id = :id');
-		$q->bindValue(':id', (int) $id, \PDO::PARAM_INT);
+		$q = $this->dao->prepare('SELECT NCC_id, NCC_fk_NCE, NCC_fk_MMC, NCC_fk_NNG, NCC_content, NCC_visitor, NCC_date  FROM t_new_commentc WHERE NCC_id = :id');
+		$q->bindValue(':id', (int) $commentc_id, \PDO::PARAM_INT);
 		$q->execute();
 		
-		$q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\Commentc' );
+		$q->setFetchMode(\PDO::FETCH_ASSOC | \PDO::FETCH_PROPS_LATE);
 		
-		return $q->fetch();
+		$result = $q->fetch();
+		
+		if($result == false)
+		{
+			return false;
+		}else{
+			$Commentc = new Commentc($result);
+			return $Commentc;
+		}
 	}
 	
 	public function delete($id)

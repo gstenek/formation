@@ -49,6 +49,7 @@ abstract class CommentcManager extends Manager
 	 */
 	abstract public function  getCommentcListUsingNewcId($newc_id);
 	
+	
 	/**
 	 * Méthode permettant de modifier un commentaire.
 	 * @param $Commentc Le commentaire à modifier
@@ -59,11 +60,13 @@ abstract class CommentcManager extends Manager
 	/**
 	 * Méthode permettant d'obtenir un commentaire spécifique.
 	 *
-	 * @param $id L'identifiant du commentaire
+	 * @param $commentc_id
 	 *
 	 * @return Commentc
+	 * @internal param L $id 'identifiant du commentaire
+	 *
 	 */
-	abstract public function get($id);
+	abstract public function getCommentcUsingCommentcId($commentc_id);
 	
 	/**
 	 * Méthode permettant de supprimer un commentaire.
@@ -78,4 +81,6 @@ abstract class CommentcManager extends Manager
 	 * @return void
 	 */
 	abstract public function deleteFromNews($news);
+	
+	
 }

@@ -61,6 +61,8 @@ class SubscriptionController extends BackController
 		if ($formHandler->process())
 		{
 			$this->app->user()->setFlash('Bienvenue !');
+			$this->app->user()->setAuthenticated( true );
+			$this->app->user()->setAttribute('Memberc',$form->entity());
 			$this->app->httpResponse()->redirect( '/admin/' );
 		}
 		$this->page->addVar('title', 'Subscription');

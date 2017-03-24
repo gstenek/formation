@@ -52,6 +52,13 @@ class Commentc extends Entity
 	{
 		return !((empty($this->fk_MMC) && empty($this->visitor)) || empty($this->content));
 	}
+	
+	public function isEqual(Commentc $Commentc)
+	{
+		if($this->content == $Commentc->content())
+			return true;
+		else return false;
+	}
 
 	/**
 	 * @return mixed

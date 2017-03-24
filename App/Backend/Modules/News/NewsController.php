@@ -64,7 +64,8 @@ class NewsController extends BackController
 					$this->page->addVar( 'form', $form->createView() );
 				}else{  // lien incorrect
 					// redirect et message au user
-					die('coucou l\'erreur');
+					$this->app->user()->setFlash('News introuvable !');
+					$this->app->httpResponse()->redirect('/');
 				}
 				
 			}else{ // Sinon on ajoute une novuelle news
@@ -138,38 +139,79 @@ class NewsController extends BackController
 		
 	}
 	
-	public function executeUpdateComment(HTTPRequest $request)
+	public function executeBuildCommentForm(HTTPRequest $request)
 	{
-		$this->page->addVar('title', 'Modification d\'un commentaire');
-		
-		if ($request->method() == 'POST')
-		{
-			$comment = new Commentc([
-				'id' => $request->getData('id'),
-				'auteur' => $request->postData('auteur'),
-				'contenu' => $request->postData('contenu')
-			]);
+		if($request->getExists( 'id' )){ // L'identifiant duc om est transmis si on veut le modifier
+			
+			if ( $request->postData( 'submit' ) ) {
+				
+				$Commentc = new Commentc( [ 'NCC_id' => $request->getData( 'id' ) ] );
+				$this->executePutCommentc( $request, $Commentc );
+				
+			}else{
+				$this->page->addVar( 'submit', 'Valider' );
+				$this->page->addVar( 'action', '' );
+				$this->page->addVar( 'title', 'Modification d\'un commentaire' );
+				
+				$Commentc = $this->managers->getManagerOf( 'Commentc' )->getCommentcUsingCommentcId( $request->getData( 'id' ) );
+				
+				if($Commentc){
+					$formBuilder = new CommentFormBuilder($Commentc, $this);
+					$formBuilder->build();
+					
+					$form = $formBuilder->form();
+					
+					//$infos = 'Dernière édition le '.$Newg->date_edition().' par '.$Memberc->login();
+					//$this->page->addVar( 'infos', $infos );
+					
+					$this->page->addVar( 'form', $form->createView() );
+				}else{  // lien incorrect
+					// redirect et message au user
+					$this->app->user()->setFlash('Commentaire introuvable !');
+					$this->app->httpResponse()->redirect('/');
+				}
+			}
 		}
-		else
-		{
-			$comment = $this->managers->getManagerOf('Comments')->get($request->getData('id'));
-		}
 		
-		$formBuilder = new CommentFormBuilder($comment);
+	}
+	
+	public function executePutCommentc(HTTPRequest $request, Commentc $Commentc){
+		
+		// setters
+		$Commentc->setContent($request->postData('content'));
+		
+		$formBuilder = new CommentFormBuilder($Commentc, $this);
 		$formBuilder->build();
-		
 		$form = $formBuilder->form();
 		
-		// On récupère le gestionnaire de formulaire (le paramètre de getManagerOf() est bien entendu à remplacer).
-		$formHandler = new \OCFram\FormHandler($form, $this->managers->getManagerOf('Comments'), $request);
-		
-		if ($formHandler->process())
+		// vérifier si le contenu a changé
+		$Commentc_to_compare = $this->managers->getManagerOf( 'Commentc' )->getCommentcUsingCommentcId($Commentc->id());
+		if($Commentc->isEqual($Commentc_to_compare))
 		{
-			$this->app->user()->setFlash('Le commentaire a bien été modifié');
-			$this->app->httpResponse()->redirect('/admin/');
+			$this->app->user()->setFlash('Vous n\'avez pas modifier la news');
+		}else{
+			//$form->entity()->setId($Commentc_to_compare->id());
+			$form->entity()->setFk_MMC($Commentc_to_compare->fk_MMC());
+			$form->entity()->setFk_NCE($Commentc_to_compare->fk_NCE());
+			$form->entity()->setFk_NNG($Commentc_to_compare->fk_NNG());
+			$form->entity()->setVisitor($Commentc_to_compare->visitor());
+			$form->entity()->setDate($Commentc_to_compare->date());
+			// On récupère le gestionnaire de formulaire (le paramètre de getManagerOf() est bien entendu à remplacer).
+			$formHandler = new FormHandler($form, $this->managers->getManagerOf('Commentc'), $request);
+			
+			if ($formHandler->process())
+			{
+				$this->app->user()->setFlash('Commentaire  bien modifé !');
+				//$this->app->httpResponse()->redirect( '/admin/' );
+				$Newg =  $this->managers->getManagerOf('Newg')->getNewgUsingNewgId($form->entity()->fk_NNG());
+				$this->app->httpResponse()->redirect('/news-'.$Newg->fk_NNC().'.html');
+			}
 		}
 		
+		$this->page->addVar('title', 'Modification  d\'un commentaire');
 		$this->page->addVar('form', $form->createView());
+		$this->page->addVar('submit', 'Valider');
+		$this->page->addVar('action', '');
 	}
 	
 	public function executeClearNews(HTTPRequest $request)
@@ -185,7 +227,7 @@ class NewsController extends BackController
 	}
 	
 	
-	public function executeDeleteComment(HTTPRequest $request)
+	public function executeClearComment(HTTPRequest $request)
 	{
 		$this->managers->getManagerOf('Comments')->delete($request->getData('id'));
 		

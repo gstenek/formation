@@ -15,7 +15,8 @@ class MembercManagerPDO extends MembercManager {
 	
 	protected function insertMemberc(Memberc $Memberc) {
 		
-		$q = $this->dao->prepare('INSERT INTO t_mem_memberc(MMC_name, MMC_surname, MMC_login, MMC_email, MMC_password, MMC_dateInscription, MMC_dateBirth) VALUES (:name,:surname, :login, :email, :password, :dateInscription, :dateBirth)');
+		$q = $this->dao->prepare('INSERT INTO t_mem_memberc(MMC_name, MMC_surname, MMC_login, MMC_email, MMC_password, MMC_dateInscription, MMC_dateBirth, MMC_fk_MMY, MMC_fk_MME)
+									VALUES (:name,:surname, :login, :email, :password, :dateInscription, :dateBirth, :MMY, :MME)');
 		
 		if($Memberc->dateInscription() == NULL)
 		{
@@ -34,6 +35,8 @@ class MembercManagerPDO extends MembercManager {
 		$q->bindValue(':password', $Memberc->password());
 		$q->bindValue(':dateBirth', $Memberc->dateBirth());
 		$q->bindValue(':dateInscription', $Memberc->dateInscription());
+		$q->bindValue(':MME', $Memberc->fk_MME());
+		$q->bindValue(':MMY', $Memberc->fk_MMY());
 		
 		$q->execute();
 		
@@ -42,7 +45,7 @@ class MembercManagerPDO extends MembercManager {
 	
 	public function getMembercUsingLogin( $login ) {
 		
-		$q = $this->dao->prepare('SELECT MMC_id, MMC_name, MMC_surname, MMC_login, MMC_email,  MMC_password, MMC_dateInscription, MMC_dateBirth FROM t_mem_memberc WHERE MMC_login = :login');
+		$q = $this->dao->prepare('SELECT MMC_id, MMC_name, MMC_surname, MMC_login, MMC_email,  MMC_password, MMC_dateInscription, MMC_dateBirth, MMC_fk_MMY, MMC_fk_MME FROM t_mem_memberc WHERE MMC_login = :login');
 		$q->bindValue(':login', $login);
 		$q->execute();
 		
@@ -61,7 +64,7 @@ class MembercManagerPDO extends MembercManager {
 	
 	public function getMembercUsingEmail( $email ) {
 		
-		$q = $this->dao->prepare('SELECT MMC_id, MMC_name, MMC_surname, MMC_login, MMC_email,  MMC_password, MMC_dateInscription, MMC_dateBirth FROM t_mem_memberc WHERE MMC_email = :email');
+		$q = $this->dao->prepare('SELECT MMC_id, MMC_name, MMC_surname, MMC_login, MMC_email,  MMC_password, MMC_dateInscription, MMC_dateBirth, MMC_fk_MMY, MMC_fk_MME FROM t_mem_memberc WHERE MMC_email = :email');
 		$q->bindValue(':email', $email);
 		$q->execute();
 		
@@ -89,7 +92,7 @@ class MembercManagerPDO extends MembercManager {
 	 */
 	public function getMembercUsingId( $id ) {
 		
-		$q = $this->dao->prepare('SELECT MMC_id, MMC_name, MMC_surname, MMC_login, MMC_email,  MMC_password, MMC_dateInscription, MMC_dateBirth FROM t_mem_memberc WHERE MMC_id = :id');
+		$q = $this->dao->prepare('SELECT MMC_id, MMC_name, MMC_surname, MMC_login, MMC_email,  MMC_password, MMC_dateInscription, MMC_dateBirth, MMC_fk_MMY, MMC_fk_MME FROM t_mem_memberc WHERE MMC_id = :id');
 		$q->bindValue(':id', $id);
 		$q->execute();
 		

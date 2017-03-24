@@ -96,7 +96,7 @@ class NewsController extends BackController
 			'fk_NNG' => $Newg->id()
 		]);
 		if($this->app()->user()->isAuthenticated()){
-			$Commentc->setFk_MMC($this->app()->user()->isAuthenticated()->getAttribute('Memberc')->id());
+			$Commentc->setFk_MMC($this->app()->user()->getAttribute('Memberc')->id());
 		}else{
 			$Commentc->setVisitor($request->postData('visitor'));
 		}

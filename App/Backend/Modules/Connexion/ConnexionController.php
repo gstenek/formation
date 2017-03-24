@@ -26,6 +26,7 @@ class ConnexionController extends BackController
 			$manager = $this->managers->getManagerOf( 'Memberc' );
 			$Memberc = $manager->getMembercUsingLogin( $login );
 			
+			
 			if ( $Memberc && password_verify ( $password , $Memberc->password())) {
 				$this->app->user()->setAuthenticated( true );
 				$this->app->user()->setAttribute( 'Memberc', $Memberc );

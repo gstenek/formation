@@ -37,6 +37,20 @@ abstract class NewgManager extends Manager {
 	abstract protected function insertNewg( Newg $Newg );
 	
 	/**
+	 * Méthode retournant une news précise.
+	 *
+	 *
+	 * @param $newg_id
+	 *
+	 * @return Newg|false La news demandée
+	 *
+	 * @internal param $newg_id
+	 *
+	 * @internal param L $newg_id 'identifiant de la news à récupérer
+	 */
+	abstract protected function getNewgUsingNewgId($newg_id);
+	
+	/**
 	 * Méthode permettant d'enregistrer une news.
 	 *
 	 * @param Newg $Newg

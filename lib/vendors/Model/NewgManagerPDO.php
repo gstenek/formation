@@ -12,6 +12,37 @@ use \Entity\Newg;
 
 class NewgManagerPDO extends NewgManager
 {
+	/**
+	 * Méthode retournant une news précise.
+	 *
+	 *
+	 * @param $newg_id
+	 *
+	 * @return Newg|false La news demandée
+	 *
+	 * @internal param $newg_id
+	 *
+	 * @internal param L $newg_id 'identifiant de la news à récupérer
+	 */
+	public function getNewgUsingNewgId( $newg_id ) {
+		$q = $this->dao->prepare('SELECT  NNG_id, NNG_fk_MMC, NNG_fk_NNE, NNG_date_edition, NNG_title, NNG_content, NNG_fk_NNC
+								FROM t_new_newg
+								WHERE NNG_id = :id ');
+		$q->bindValue(':id', $newg_id);
+		$q->execute();
+		
+		$q->setFetchMode(\PDO::FETCH_ASSOC | \PDO::FETCH_PROPS_LATE);
+		$result = $q->fetch();
+		
+		if($result == false)
+		{
+			return false;
+		}else{
+			$Newg = new Newg($result);
+			return $Newg;
+		}
+		
+	}
 	
 	/**
 	 * Méthode retournant une news précise.
