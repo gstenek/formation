@@ -7,7 +7,7 @@
  */
 ?>
 <h2><?= $title ?></h2>
-<?php if(isset($infos)){echo '<h3>'.$infos.'</h3>';}?>
+<?php if(isset($infos)){echo '<h3>'.htmlspecialchars($infos).'</h3>';}?>
 
 <form <?php if(isset($method)){echo ' method="'.$method.'"';}else{echo 'method="POST"';} echo ' action="'.$action.'" ';?>  >
 	<p>

@@ -8,8 +8,8 @@
  */
 ?>
 <p>Par <em><?= $Newg->fk_MMC()->login() ?></em>, le <?= $Newg->fk_NNC()->date_creation()?></p>
-<h2><?= $Newg->title() ?></h2>
-<p><?= nl2br($Newg->content()) ?></p>
+<h2><?= htmlspecialchars($Newg->title()) ?></h2>
+<p><?= htmlspecialchars($Newg->content()) ?></p>
 
 <?php if ($Newg->fk_NNC()->date_creation() != $Newg->date_edition()) { ?>
 	<p style="text-align: right;"><small><em>Modifiée le <?= $Newg->date_edition() ?></em></small></p>
@@ -38,7 +38,7 @@ foreach ($comments as $Commentc)
 				<a href="admin/comment-delete-<?= $Commentc['id'] ?>.html">Supprimer</a>
 			<?php } ?>
 		</legend>
-		<p><?= nl2br(htmlspecialchars($Commentc['content'])) ?></p>
+		<p><?= htmlspecialchars($Commentc['content']) ?></p>
 	</fieldset>
 	<?php
 }

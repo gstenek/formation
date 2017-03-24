@@ -23,7 +23,7 @@ class Newg extends Entity {
 	const NNE_INVALID = 1;
 	const NNE_VALID = 2;
 	
-	const CODE_TABLE = 'NNG';	
+	const CODE_TABLE = 'NNG';
 	
 	public function __construct( array $donnees = [] ) {
 		$result = [];

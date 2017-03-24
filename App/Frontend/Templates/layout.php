@@ -32,7 +32,7 @@
 						<?php } ?>
 						<li><a href="/news-insert.html">Ajouter une news</a></li>
 						<li><a href="/logout">Se déconnecter</a></li>
-						<li><?= $user->getAttribute('Memberc')->login()?></li>
+						<li><?= htmlspecialchars($user->getAttribute('Memberc')->login())?></li>
 					<?php }else{ ?>
 						<li><a href="/login">Se connecter</a></li>
 						<li><a href="/subscription">S'inscrire</a></li>

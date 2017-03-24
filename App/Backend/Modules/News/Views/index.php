@@ -13,7 +13,7 @@
 	<?php
 	foreach ($listeNews as $Newg)
 	{
-		echo '<tr><td>', $Newg->fk_MMC()->login(), '</td><td>', $Newg->title(), '</td><td>le ', $Newg->fk_NNC()->date_creation(), '</td><td>', ($Newg->fk_NNC()->date_creation() == $Newg->date_edition() ? '-' : 'le '.$Newg->date_edition()), '</td><td><a href="/news-update-', $Newg->fk_NNC()->id(), '.html"><img src="/images/update.png" alt="Modifier" /></a> <a href="news-delete-', $Newg->fk_NNC()->id(), '.html"><img src="/images/delete.png" alt="Supprimer" /></a></td></tr>', "\n";
+		echo '<tr><td>', htmlspecialchars($Newg->fk_MMC()->login()), '</td><td>', htmlspecialchars($Newg->title()), '</td><td>le ', htmlspecialchars($Newg->fk_NNC()->date_creation()), '</td><td>', ($Newg->fk_NNC()->date_creation() == $Newg->date_edition() ? '-' : 'le '.$Newg->date_edition()), '</td><td><a href="/news-update-', $Newg->fk_NNC()->id(), '.html"><img src="/images/update.png" alt="Modifier" /></a> <a href="news-delete-', $Newg->fk_NNC()->id(), '.html"><img src="/images/delete.png" alt="Supprimer" /></a></td></tr>', "\n";
 	}
 	?>
 </table>
