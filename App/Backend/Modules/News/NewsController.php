@@ -229,11 +229,13 @@ class NewsController extends BackController
 	
 	public function executeClearComment(HTTPRequest $request)
 	{
-		$this->managers->getManagerOf('Comments')->delete($request->getData('id'));
-		
+		$Commentc = $this->managers->getManagerOf('Commentc')->getCommentcUsingCommentcId($request->getData('id'));
+		$Commentc->setFk_NCE(Commentc::NCE_INVALID);
+		$this->managers->getManagerOf('Commentc')->save($Commentc);
 		$this->app->user()->setFlash('Le commentaire a bien été supprimé !');
 		
-		$this->app->httpResponse()->redirect('.');
+		$Newg =  $this->managers->getManagerOf('Newg')->getNewgUsingNewgId($Commentc->fk_NNG());
+		$this->app->httpResponse()->redirect('/news-'.$Newg->fk_NNC().'.html');
 	}
 	
 	
