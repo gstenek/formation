@@ -225,6 +225,13 @@ class Memberc extends Entity
 	}
 	
 	/**
+	 * @return bool
+	 */
+	public function isTypeAdmin() {
+		return $this->fk_MMY() == self::MMY_ADMIN;
+	}
+	
+	/**
 	 * @param mixed $fk_MMY
 	 */
 	public function setFk_MMY( $fk_MMY ) {

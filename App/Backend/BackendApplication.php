@@ -8,7 +8,12 @@
 
 namespace App\Backend;
 
+use App\Frontend\FrontendApplication;
+use App\Frontend\Modules\Connexion\ConnexionController;
+use App\Frontend\Modules\News\NewsController;
 use \OCFram\Application;
+use \Entity\Memberc;
+
 
 class BackendApplication extends Application{
 	
@@ -18,21 +23,21 @@ class BackendApplication extends Application{
 		
 		$this->name = 'Backend';
 	}
-	
 	public function run()
 	{
-		if ($this->user->isAuthenticated())
-		{
-			$controller = $this->getController();
-		}
-		else
-		{
-			$controller = new Modules\Connexion\ConnexionController($this, 'Connexion', 'index');
+		if(!$this->user->isAuthenticated()) {
+			$this->httpResponse()->redirect( '/login' );
 		}
 		
+		if(!$this->user()->getAttribute('Memberc')->isTypeAdmin()) {
+			$this->httpResponse()->redirect( '/' );
+		}
+		
+		$controller = $this->getController();
 		$controller->execute();
 		
 		$this->httpResponse->setPage($controller->page());
 		$this->httpResponse->send();
+			
 	}
 }

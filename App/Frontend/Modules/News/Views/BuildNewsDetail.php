@@ -14,7 +14,9 @@
 <?php if ($Newg->fk_NNC()->date_creation() != $Newg->date_edition()) { ?>
 	<p style="text-align: right;"><small><em>Modifiée le <?= $Newg->date_edition() ?></em></small></p>
 <?php } ?>
-
+<?php if($this->app->user()->isAuthenticated() && (($this->app->user()->getAttribute('Memberc')->id() == $Newg->fk_MMC()->id())	|| $this->app->user()->getAttribute('Memberc')->isTypeAdmin())):?>
+	<p><a href="/news-update-<?= $Newg['fk_NNC']['id'] ?>.html">Modifier</a></p>
+<?php endif; ?>
 <p><a href="commenter-<?= $Newg['fk_NNC']['id'] ?>.html">Ajouter un commentaire</a></p>
 
 <?php
@@ -27,13 +29,11 @@ if (empty($comments))
 
 foreach ($comments as $Commentc)
 {
-	//var_dump($Commentc['References']);
-	//var_dump($Commentc->References('Memberc')['login']);
 	?>
 	<fieldset>
 		<legend>
 			Posté par <strong><?= $Commentc['fk_MMC'] === NULL ? htmlspecialchars($Commentc['visitor']) : htmlspecialchars($Commentc->References('Memberc')['login']) ?></strong> le <?= $Commentc['date'] ?>
-			<?php if ($user->isAuthenticated()) { ?> -
+			<?php if (	$user->isAuthenticated() && $user->getAttribute('Memberc')->isTypeAdmin()) { ?> -
 				<a href="admin/comment-update-<?= $Commentc['id'] ?>.html">Modifier</a> |
 				<a href="admin/comment-delete-<?= $Commentc['id'] ?>.html">Supprimer</a>
 			<?php } ?>

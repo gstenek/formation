@@ -302,6 +302,10 @@ nav ul li#current a {
 	width: 70%;
 	padding: 0; margin: 5px 0 0 5px;
 	display: inline;
+	text-overflow: ellipsis;
+	/* Required for text-overflow to do anything */
+	white-space: nowrap;
+	overflow: hidden;
 }
 #main h2 {
 	margin-top: 10px;
@@ -321,6 +325,26 @@ nav ul li#current a {
 #main ul li {
 	list-style-image: url(../images/bullet.gif);
 }
+
+#main table {
+	width: 100%;
+	table-layout: fixed;
+	}
+#main tbody {
+	display: block;
+	max-width: 900px;
+	text-overflow: ellipsis;
+	/* Required for text-overflow to do anything */
+	white-space: nowrap;
+	overflow: hidden;
+	}
+
+#main td {
+	max-width: 100px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	}
 
 .post-footer {
 	background-color: #FAFAFA;

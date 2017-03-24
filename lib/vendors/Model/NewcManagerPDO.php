@@ -21,7 +21,8 @@ class NewcManagerPDO extends NewcManager
 									INNER JOIN t_new_newg ON NNC_id = NNG_fk_NNC
 									INNER JOIN t_mem_memberc ON NNC_fk_MMC = MMC_id
 									WHERE NNC_fk_NNE = :NNC_fk_NNE
-									AND NNG_fk_NNE = :NNG_fk_NNE');
+									AND NNG_fk_NNE = :NNG_fk_NNE
+									ORDER BY NNG_date_edition DESC');
 		
 		if ($debut != -1 || $limite != -1)
 		{

@@ -27,11 +27,14 @@
 				<ul>
 					<li><a href="/">Accueil</a></li>
 					<?php if ($user->isAuthenticated()) { ?>
-						<li><a href="/admin/">Admin</a></li>
-						<li><a href="/admin/news-insert.html">Ajouter une news</a></li>
-						<li><a href="/admin/logout">Se déconnecter</a></li>
+						<?php if ($user->getAttribute('Memberc')->fk_MMY() == \Entity\Memberc::MMY_ADMIN) { ?>
+							<li><a href="/admin/">Admin</a></li>
+						<?php } ?>
+						<li><a href="/news-insert.html">Ajouter une news</a></li>
+						<li><a href="/logout">Se déconnecter</a></li>
+						<li><?= $user->getAttribute('Memberc')->login()?></li>
 					<?php }else{ ?>
-						<li><a href="/admin/">Se connecter</a></li>
+						<li><a href="/login">Se connecter</a></li>
 						<li><a href="/subscription">S'inscrire</a></li>
 					<?php } ?>
 				</ul>

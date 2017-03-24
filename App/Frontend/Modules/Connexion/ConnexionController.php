@@ -6,7 +6,7 @@
  * Time: 16:28
  */
 
-namespace App\Backend\Modules\Connexion;
+namespace App\Frontend\Modules\Connexion;
 
 use FormBuilder\ConnexionFormBuilder;
 use \OCFram\BackController;
