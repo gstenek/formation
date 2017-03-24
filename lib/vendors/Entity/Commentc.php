@@ -113,7 +113,7 @@ class Commentc extends Entity
 	 * @param mixed $visitor
 	 */
 	public function setVisitor( $visitor ) {
-		$this->visitor = $visitor;
+		$this->visitor = strip_tags($visitor, PARENT::TAGS_ALLOWED);
 	}
 	
 	/**
@@ -127,7 +127,7 @@ class Commentc extends Entity
 	 * @param mixed $content
 	 */
 	public function setContent( $content ) {
-		$this->content = $content;
+		$this->content = strip_tags($content, PARENT::TAGS_ALLOWED);
 	}
 	
 	/**

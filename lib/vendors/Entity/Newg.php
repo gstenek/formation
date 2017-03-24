@@ -23,7 +23,7 @@ class Newg extends Entity {
 	const NNE_INVALID = 1;
 	const NNE_VALID = 2;
 	
-	const CODE_TABLE = 'NNG';
+	const CODE_TABLE = 'NNG';	
 	
 	public function __construct( array $donnees = [] ) {
 		$result = [];
@@ -123,7 +123,7 @@ class Newg extends Entity {
 	 * @param mixed $title
 	 */
 	public function setTitle( $title ) {
-		$this->title = $title;
+		$this->title = strip_tags($title, PARENT::TAGS_ALLOWED);
 	}
 	
 	/**
@@ -137,7 +137,7 @@ class Newg extends Entity {
 	 * @param mixed $content
 	 */
 	public function setContent( $content ) {
-		$this->content = $content;
+		$this->content = strip_tags($content,PARENT::TAGS_ALLOWED);
 	}
 	
 	/**

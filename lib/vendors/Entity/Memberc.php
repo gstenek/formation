@@ -84,7 +84,7 @@ class Memberc extends Entity
 			$this->erreurs[] = self::NAME_INVALIDE;
 		}
 		
-		$this->name = $name;
+		$this->name = strip_tags($name,PARENT::TAGS_ALLOWED);
 	}
 	
 	/**
@@ -97,7 +97,7 @@ class Memberc extends Entity
 			$this->erreurs[] = self::SURNAME_INVALIDE;
 		}
 		
-		$this->surname = $surname;
+		$this->surname = strip_tags($surname,PARENT::TAGS_ALLOWED);
 	}
 	
 	/**
@@ -109,14 +109,14 @@ class Memberc extends Entity
 			$this->erreurs[] = self::LOGIN_INVALIDE;
 		}
 		
-		$this->login = $login;
+		$this->login = strip_tags($login,PARENT::TAGS_ALLOWED);
 	}
 	
 	/**
 	 * @param mixed $password
 	 */
 	public function setpassword( $password ) {
-		$this->password = $password;
+		$this->password = strip_tags($password, PARENT::TAGS_ALLOWED);
 	}
 	
 	/**
@@ -128,7 +128,7 @@ class Memberc extends Entity
 			$this->erreurs[] = self::LOGIN_INVALIDE;
 		}
 		
-		$this->email = $email;
+		$this->email = strip_tags($email,PARENT::TAGS_ALLOWED);
 	}
 	
 	/**

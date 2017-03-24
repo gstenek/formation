@@ -18,6 +18,8 @@ abstract class Entity implements \ArrayAccess {
 	// Utilisation du trait Hydrator pour que nos entités puissent être hydratées
 	use Hydrator;
 	
+	const TAGS_ALLOWED = '';
+	
 	protected $erreurs = [],
 		$id,
 		$References = [];
