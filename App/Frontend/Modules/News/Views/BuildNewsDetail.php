@@ -30,18 +30,19 @@ if (empty($comments))
 foreach ($comments as $Commentc)
 {
 	?>
-	<fieldset>
+	<div id="comment">
 		<legend>
 			Posté par <strong><?= $Commentc['fk_MMC'] === NULL ? htmlspecialchars($Commentc['visitor']) : htmlspecialchars($Commentc->References('Memberc')['login']) ?></strong> le <?= $Commentc['date'] ?>
 			<?php if (	$user->isAuthenticated() && $user->getAttribute('Memberc')->isTypeAdmin()) { ?> -
 				<a href="admin/comment-update-<?= $Commentc['id'] ?>.html">Modifier</a> |
 				<a href="admin/comment-delete-<?= $Commentc['id'] ?>.html">Supprimer</a>
-			<?php } ?>
 		</legend>
+		<?php } ?>
 		<p><?= htmlspecialchars($Commentc['content']) ?></p>
-	</fieldset>
+	</div>
 	<?php
 }
 ?>
 
 <p><a href="commenter-<?= $Newg->fk_NNC()->id() ?>.html">Ajouter un commentaire</a></p>
+<?=  \OCFram\RouterFactory::getRouter('Frontend')->getRouteFromAction('News','BuildNewsDetail',array('id' => '5'))->url();?>

@@ -303,11 +303,11 @@ nav ul li#current a {
 	padding: 0; margin: 5px 0 0 5px;
 	display: inline;
 	text-overflow: ellipsis;
-	/* Required for text-overflow to do anything */
-	white-space: nowrap;
-	overflow: hidden;
-}
+	
+}/*
 #main h2 {
+	width: 100%;
+	overflow-wrap: break-word;
 	margin-top: 10px;
 	font: Bold 140% 'Trebuchet MS', Tahoma, Sans-serif;
 	color: #88ac0b; 
@@ -315,7 +315,25 @@ nav ul li#current a {
 	border-bottom: 1px solid #EFF0F1;
 	background: #FFF url(../images/square-green.png) no-repeat 3px 50%;	
 	text-transform: none;
-}
+	white-space: nowrap;
+}*/
+
+#main h2 {
+	width: 95%;
+	overflow-wrap: break-word;
+	text-transform: none;
+	font: Bold 140% 'Trebuchet MS', Tahoma, Sans-serif;
+	color: #88ac0b;
+	padding: 5px 0 5px 25px;
+	border-bottom: 1px solid #EFF0F1;
+	background: #FFF url(../images/square-green.png) no-repeat 3px 50%;
+	}
+
+#main p {
+	width: 95%;
+	overflow-wrap: break-word;
+	}
+
 #main h2 a {
 	background: none;
 	color: #88ac0b;
@@ -343,7 +361,7 @@ nav ul li#current a {
 	max-width: 100px;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	white-space: nowrap;
+	
 	}
 
 .post-footer {

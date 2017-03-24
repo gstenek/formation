@@ -30,27 +30,7 @@ abstract class Application {
 	public function getController()
 	{
 		
-		$router = new Router;
-		
-		$xml = new \DOMDocument;
-		$xml->load(__DIR__.'/../../App/'.$this->name.'/Config/routes.xml');
-		
-		$routes = $xml->getElementsByTagName('route');
-		
-		// On parcourt les routes du fichier XML.
-		foreach ($routes as $route)
-		{
-			$vars = [];
-			
-			// On regarde si des variables sont présentes dans l'URL.
-			if ($route->hasAttribute('vars'))
-			{
-				$vars = explode(',', $route->getAttribute('vars'));
-			}
-			
-			// On ajoute la route au routeur.
-			$router->addRoute(new Route($route->getAttribute('url'), $route->getAttribute('module'), $route->getAttribute('action'), $vars));
-		}
+		$router = RouterFactory::getRouter($this->name());
 		
 		try
 		{
@@ -68,7 +48,6 @@ abstract class Application {
 		
 		// On ajoute les variables de l'URL au tableau $_GET.
 		$_GET = array_merge($_GET, $matchedRoute->vars());
-		
 		// On instancie le contrôleur.
 		
 		$controllerClass = 'App\\'.$this->name.'\\Modules\\'.$matchedRoute->module().'\\'.$matchedRoute->module().'Controller';

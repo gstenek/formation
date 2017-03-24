@@ -52,6 +52,7 @@ class Router
 					
 					// On assigne ce tableau de variables à la route
 					$route->setVars($listVars);
+					var_dump($listVars);
 				}
 				
 				return $route;
@@ -59,5 +60,37 @@ class Router
 		}
 		
 		throw new \RuntimeException('Aucune route ne correspond à l\'URL', self::NO_ROUTE);
+	}
+	
+	
+	/**
+	 * @param       $module
+	 * @param       $action
+	 * @param array $vars
+	 *
+	 * @return Route
+	 * @throws \RuntimeException
+	 */
+	public function getRouteFromAction($module, $action ,array $vars = [])
+	{
+		foreach ($this->routes as $route) // pour chaque routes
+		{
+			// Si les actions et modules correspondent à la route
+			if($route->matchModuleAction($module,$action))
+			{
+				if($route->hasVars())
+				{
+					if(count($route->varsNames()) == count($vars))
+					{
+						$route->setVars($vars);
+					}else{
+						throw new \RuntimeException('La route ne correspond (nombre de vars invalide)', self::NO_ROUTE);
+					}
+				}
+				
+				return $route;
+			}
+		}
+		throw new \RuntimeException('Aucune route ne correspond à ('.$module.$action.')', self::NO_ROUTE);
 	}
 }

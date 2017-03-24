@@ -16,6 +16,7 @@ class Route
 	protected $module;
 	protected $url;
 	protected $varsNames;
+	protected $alias;
 	protected $vars = [];
 	
 	public function __construct($url, $module, $action, array $varsNames)
@@ -36,6 +37,18 @@ class Route
 		if (preg_match('`^'.$this->url.'$`', $url, $matches))
 		{
 			return $matches;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	public function matchModuleAction($module, $action)
+	{
+		if ($this->module == $module && $this->action == $action)
+		{
+			return true;
 		}
 		else
 		{
@@ -86,6 +99,10 @@ class Route
 	{
 		return $this->module;
 	}
+	public function url()
+	{
+		return $this->url;
+	}
 	
 	public function vars()
 	{
@@ -96,4 +113,14 @@ class Route
 	{
 		return $this->varsNames;
 	}
+	
+	public function generateUrl()
+	{
+		foreach ($this->vars() as $key => $value)
+		{
+			
+		}
+	}
+	
+	
 }
