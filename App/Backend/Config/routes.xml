@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <routes>
 	<route url="/admin/" module="News" action="index" ></route>
-	<route url="/admin/news-delete-([0-9]+)\.html" module="News" action="ClearNews" vars="id" ></route>
-	<route url="/admin/comment-update-([0-9]+)\.html" module="News" action="BuildCommentForm" vars="id" ></route>
-	<route url="/admin/comment-delete-([0-9]+)\.html" module="News" action="ClearComment" vars="id" ></route>
-	
+	<route url="/admin/news-delete-([0-9]+)\.html" module="News" action="ClearNews" vars="id" alias="/admin/news-delete-[id].html" ></route>
+	<route url="/admin/comment-update-([0-9]+)\.html" module="News" action="BuildCommentForm" vars="id" alias="/admin/comment-update-[id].html" ></route>
+	<route url="/admin/comment-delete-([0-9]+)\.html" module="News" action="ClearComment" vars="id" alias="/admin/comment-delete-[id].html" ></route>
 </routes>

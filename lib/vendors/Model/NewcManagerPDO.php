@@ -62,16 +62,13 @@ class NewcManagerPDO extends NewcManager
 		$q->execute();
 		
 		$q->setFetchMode(\PDO::FETCH_ASSOC | \PDO::FETCH_PROPS_LATE);
-		$result = $q->fetch();
-		
-		if($result == false)
+		$Newc = false;
+		if($result = $q->fetch())
 		{
-			return false;
-		}else{
 			$Newc = new Newc($result);
 			$Newc->setId($newc_id);
-			return $Newc;
 		}
+		return $Newc;
 	}
 	
 	public function countNewcUsingNNE($newc_nne) {

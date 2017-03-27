@@ -52,9 +52,8 @@ class Router
 					
 					// On assigne ce tableau de variables à la route
 					$route->setVars($listVars);
-					var_dump($listVars);
+					
 				}
-				
 				return $route;
 			}
 		}
@@ -76,7 +75,7 @@ class Router
 		foreach ($this->routes as $route) // pour chaque routes
 		{
 			// Si les actions et modules correspondent à la route
-			if($route->matchModuleAction($module,$action))
+			if($route->matchModuleAction($module,$action,$vars))
 			{
 				if($route->hasVars())
 				{

@@ -21,7 +21,7 @@ abstract class NewcManager extends Manager
 	 * @param $limite int Le nombre de news à sélectionner
 	 * @param $newc_nne
 	 *
-	 * @return array La liste des news. Chaque entrée est une instance de News.
+	 * @return Newg[] La liste des news. Chaque entrée est une instance de News.
 	 */
 	abstract public function getNewsListUsingNNE($debut = -1, $limite = -1, $newc_nne);
 	
@@ -40,8 +40,8 @@ abstract class NewcManager extends Manager
 	
 	/**
 	 * Méthode retournant une news précise.
-	 * @param $id int L'identifiant de la news à récupérer
-	 * @return Newc La news demandée
+	 * @param $newc_id int L'identifiant de la news à récupérer
+	 * @return Newc|bool La news demandée
 	 */
 	abstract public function getNewcUsingNewcId($newc_id);
 	

@@ -11,11 +11,13 @@ namespace App\Frontend\Modules\News;
 use Entity\Memberc;
 use Entity\Newg;
 use FormBuilder\NewsFormBuilder;
+use Model\NewcManager;
 use \OCFram\BackController;
 use \OCFram\HTTPRequest;
 use \Entity\Commentc;
 use \Entity\Newc;
 use \OCFram\Form;
+use OCFram\RouterFactory;
 use \OCFram\StringField;
 use \OCFram\TextField;
 use \FormBuilder\CommentFormBuilder;
@@ -33,6 +35,7 @@ class NewsController extends BackController
 		$this->page->addVar('title', 'Liste des dernières news');
 		
 		// On récupère le manager des news.
+		/** @var NewcManager $manager */
 		$manager = $this->managers->getManagerOf('Newc');
 		
 		// Cette ligne, vous ne pouviez pas la deviner sachant qu'on n'a pas encore touché au modèle.
@@ -48,6 +51,8 @@ class NewsController extends BackController
 				
 				$news->setContent($debut);
 			}
+			
+			
 		}
 		
 		
@@ -62,9 +67,17 @@ class NewsController extends BackController
 		}
 		
 		if($request->getExists( 'id' )){ // L'identifiant de la news est transmis si on veut la modifier
+			/** @var NewcManager $NewcManager */
+			$NewcManager = $this->managers->getManagerOf( 'Newc' );
+			/** @var Newc $Newc */
+			$Newc = $NewcManager->getNewcUsingNewcId( $request->getData( 'id' ) );
+			if (false === $Newc) {
+				$this->app->httpResponse()->redirect(self::getLinkToIndex());
+			}
 			
-			$Newc = $this->managers->getManagerOf( 'Newc' )->getNewcUsingNewcId( $request->getData( 'id' ) );
-			if($this->app()->user()->getAttribute('Memberc')->id() == $Newc->fk_MMC() || $this->app()->user()->getAttribute('Memberc')->isTypeAdmin())
+			/** @var Memberc $Memberc */
+			$Memberc = $this->app()->user()->getAttribute('Memberc');
+			if($Memberc->id() == $Newc->fk_MMC() || $Memberc->isTypeAdmin())
 			{
 				if ( $request->postData( 'submit' ) ) {
 					
@@ -76,8 +89,11 @@ class NewsController extends BackController
 				$this->page->addVar( 'action', '' );
 				$this->page->addVar( 'title', 'Edition d\'une news' );
 				
-				
+				/** @var Newg $Newg */
 				$Newg = $this->managers->getManagerOf( 'Newg' )->getNewgValidUsingNewcId($Newc->id());
+				if (false === $Newg) {
+					$this->app->httpResponse()->redirect(self::getLinkToIndex());
+				}
 				
 				$Memberc = $this->managers->getManagerOf( 'Memberc' )->getMembercUsingId($Newg->fk_MMC());
 				
@@ -93,11 +109,8 @@ class NewsController extends BackController
 					$this->page->addVar( 'infos', $infos );
 					
 					$this->page->addVar( 'form', $form->createView() );
-				}else{  // lien incorrect
-					// redirect et message au user
-					$this->app->user()->setFlash('News introuvable !');
-					$this->app->httpResponse()->redirect('/');
 				}
+				
 			}else{
 				$this->app->httpResponse()->redirect('/news-'.$request->getData( 'id' ).'.html');
 			}
@@ -247,5 +260,13 @@ class NewsController extends BackController
 		$this->page->addVar('action', '');
 	}
 
+	public static function getLinkToIndex( ) {
+		return RouterFactory::getRouter('Frontend')->getRouteFromAction('News','index')->generateHref()	;
+	}
+	public static function getLinkToBuildNewsDetail(Newg $Newg) {
+		return RouterFactory::getRouter('Frontend')->getRouteFromAction('News','BuildNewsDetail',array('id' =>$Newg->fk_NNC()->id()) )->generateHref()	;
+	}
+
+	
 	
 }

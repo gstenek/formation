@@ -15,9 +15,9 @@
 	<p style="text-align: right;"><small><em>Modifiée le <?= $Newg->date_edition() ?></em></small></p>
 <?php } ?>
 <?php if($this->app->user()->isAuthenticated() && (($this->app->user()->getAttribute('Memberc')->id() == $Newg->fk_MMC()->id())	|| $this->app->user()->getAttribute('Memberc')->isTypeAdmin())):?>
-	<p><a href="/news-update-<?= $Newg['fk_NNC']['id'] ?>.html">Modifier</a></p>
+	<p><a href=<?= \OCFram\RouterFactory::getRouter('Frontend')->getRouteFromAction('News','BuildNews',array('id' => $Newg['fk_NNC']['id']))->generateHref() ?>>Modifier</a></p>
 <?php endif; ?>
-<p><a href="commenter-<?= $Newg['fk_NNC']['id'] ?>.html">Ajouter un commentaire</a></p>
+<p><a href= <?= \OCFram\RouterFactory::getRouter('Frontend')->getRouteFromAction('News','BuildCommentForm',array('news' => $Newg['fk_NNC']['id']))->generateHref() ?>>Ajouter un commentaire</a></p>
 
 <?php
 if (empty($comments))
@@ -31,18 +31,17 @@ foreach ($comments as $Commentc)
 {
 	?>
 	<div id="comment">
-		<legend>
+		
 			Posté par <strong><?= $Commentc['fk_MMC'] === NULL ? htmlspecialchars($Commentc['visitor']) : htmlspecialchars($Commentc->References('Memberc')['login']) ?></strong> le <?= $Commentc['date'] ?>
-			<?php if (	$user->isAuthenticated() && $user->getAttribute('Memberc')->isTypeAdmin()) { ?> -
-				<a href="admin/comment-update-<?= $Commentc['id'] ?>.html">Modifier</a> |
-				<a href="admin/comment-delete-<?= $Commentc['id'] ?>.html">Supprimer</a>
-		</legend>
-		<?php } ?>
+			<?php if (	$user->isAuthenticated() && $user->getAttribute('Memberc')->isTypeAdmin()): ?> -
+				<a href=<?= \OCFram\RouterFactory::getRouter('Backend')->getRouteFromAction('News','BuildCommentForm',array('id' => $Commentc['id']))->generateHref() ?> >Modifier</a> |
+				<a href=<?= \OCFram\RouterFactory::getRouter('Backend')->getRouteFromAction('News','ClearComment',array('id' => $Commentc['id']))->generateHref() ?>>Supprimer</a>
+		
+		<?php endif; ?>
 		<p><?= htmlspecialchars($Commentc['content']) ?></p>
 	</div>
 	<?php
 }
 ?>
 
-<p><a href="commenter-<?= $Newg->fk_NNC()->id() ?>.html">Ajouter un commentaire</a></p>
-<?=  \OCFram\RouterFactory::getRouter('Frontend')->getRouteFromAction('News','BuildNewsDetail',array('id' => '5'))->url();?>
+<p><a href= <?= \OCFram\RouterFactory::getRouter('Frontend')->getRouteFromAction('News','BuildCommentForm',array('news' => $Newg['fk_NNC']['id']))->generateHref() ?>>Ajouter un commentaire</a></p>

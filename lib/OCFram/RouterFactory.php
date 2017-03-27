@@ -39,15 +39,20 @@ class RouterFactory {
 		foreach ($routes as $route)
 		{
 			$vars = [];
-			
+			$alias ='';
 			// On regarde si des variables sont présentes dans l'URL.
 			if ($route->hasAttribute('vars'))
 			{
 				$vars = explode(',', $route->getAttribute('vars'));
 			}
 			
+			if ($route->hasAttribute('alias'))
+			{
+				$alias = $route->getAttribute('alias');
+			}
+			
 			// On ajoute la route au routeur.
-			$router->addRoute(new Route($route->getAttribute('url'), $route->getAttribute('module'), $route->getAttribute('action'), $vars));
+			$router->addRoute(new Route($route->getAttribute('url'), $route->getAttribute('module'), $route->getAttribute('action'), $vars, $alias));
 		}
 			
 		self::$Router_a[$application_name]= $router;

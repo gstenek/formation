@@ -17,14 +17,17 @@ class Route
 	protected $url;
 	protected $varsNames;
 	protected $alias;
+	
+	
 	protected $vars = [];
 	
-	public function __construct($url, $module, $action, array $varsNames)
+	public function __construct($url, $module, $action, array $varsNames, $alias)
 	{
 		$this->setUrl($url);
 		$this->setModule($module);
 		$this->setAction($action);
 		$this->setVarsNames($varsNames);
+		$this->setAlias($alias);
 	}
 	
 	public function hasVars()
@@ -44,16 +47,22 @@ class Route
 		}
 	}
 	
-	public function matchModuleAction($module, $action)
+	public function matchModuleAction($module, $action, array $vars)
 	{
-		if ($this->module == $module && $this->action == $action)
+		if ($this->module == $module && $this->action == $action && sizeof($vars) == sizeof($this->varsNames()))
 		{
+				foreach ( $this->varsNames() as $index => $varname ) {
+					if(!isset($vars[$varname]))
+					{
+						return false;
+					}
+				}
+			
 			return true;
 		}
-		else
-		{
-			return false;
-		}
+		
+		return false;
+		
 	}
 	
 	public function setAction($action)
@@ -90,6 +99,13 @@ class Route
 		$this->vars = $vars;
 	}
 	
+	public function setAlias( $alias ) {
+		if(is_string($alias))
+		{
+			$this->alias = $alias;
+		}
+	}
+	
 	public function action()
 	{
 		return $this->action;
@@ -114,13 +130,28 @@ class Route
 		return $this->varsNames;
 	}
 	
-	public function generateUrl()
+	/**
+	 * @return string
+	 */
+	public function generateHref()
 	{
-		foreach ($this->vars() as $key => $value)
+		
+		if($this->hasVars())
 		{
+			$href = $this->alias();
+			foreach ($this->vars() as $key => $value)
+			{
+				$href = str_replace('['.$key.']',$value,$href);
+			}
 			
+			return $href;
 		}
+		
+		return $this->url();
 	}
-	
+
+	public function alias() {
+		return $this->alias;
+	}
 	
 }

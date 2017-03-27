@@ -5,6 +5,8 @@
  * Date: 27/02/2017
  * Time: 15:40
  */
+$Router_frontend = \OCFram\RouterFactory::getRouter('Frontend');
+$Router_backend = \OCFram\RouterFactory::getRouter('Backend');
 ?>
 <!DOCTYPE html>
 <html>
@@ -27,15 +29,15 @@
 				<ul>
 					<li><a href="/">Accueil</a></li>
 					<?php if ($user->isAuthenticated()) { ?>
-						<?php if ($user->getAttribute('Memberc')->fk_MMY() == \Entity\Memberc::MMY_ADMIN) { ?>
-							<li><a href="/admin/">Admin</a></li>
-						<?php } ?>
-						<li><a href="/news-insert.html">Ajouter une news</a></li>
-						<li><a href="/logout">Se déconnecter</a></li>
+						<?php if ($user->getAttribute('Memberc')->fk_MMY() == \Entity\Memberc::MMY_ADMIN): ?>
+							<li><a href=<?= $Router_backend->getRouteFromAction('News','index')->generateHref() ?>>Admin</a></li>
+						<?php endif; ?>
+						<li><a href=<?= $Router_frontend->getRouteFromAction('News','BuildNews')->generateHref() ?>>Ajouter une news</a></li>
+						<li><a href=<?= $Router_frontend->getRouteFromAction('Connexion','logout')->generateHref() ?>>Se déconnecter</a></li>
 						<li><?= htmlspecialchars($user->getAttribute('Memberc')->login())?></li>
 					<?php }else{ ?>
-						<li><a href="/login">Se connecter</a></li>
-						<li><a href="/subscription">S'inscrire</a></li>
+						<li><a href=<?= $Router_frontend->getRouteFromAction('Connexion','index')->generateHref() ?>>Se connecter</a></li>
+						<li><a href=<?= $Router_frontend->getRouteFromAction('Subscription','BuildSubscription')->generateHref() ?>>S'inscrire</a></li>
 					<?php } ?>
 				</ul>
 			</nav>
