@@ -33,7 +33,9 @@ class StringField extends Field
 			$widget .= ' maxlength="'.$this->maxLength.'"';
 		}
 		
-		return $widget .= ' />';
+		$widget .= ' />';
+		
+		return $widget.parent::buildWidget();
 	}
 	
 	public function setMaxLength($maxLength)

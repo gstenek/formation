@@ -8,6 +8,7 @@
 
 namespace Model;
 
+use MongoDB\Driver\Exception\RuntimeException;
 use \OCFram\Manager;
 use \Entity\Commentc;
 
@@ -16,7 +17,7 @@ abstract class CommentcManager extends Manager
 	/**
 	 * Méthode permettant d'ajouter un commentaire
 	 *
-	 * @param Commentc|Le $Commentc Le commentaire à ajouter
+	 * @param Commentc $Commentc Le commentaire à ajouter
 	 *
 	 * @return void
 	 */
@@ -24,14 +25,15 @@ abstract class CommentcManager extends Manager
 	
 	/**
 	 * Méthode permettant d'enregistrer un commentaire.
-	 * @param $Commentc Le commentaire à enregistrer
-	 * @return void
+	 * @param Commentc $Commentc Le commentaire à enregistrer
+	 * @return Commentc|RuntimeException
 	 */
 	public function save(Commentc $Commentc)
 	{
 		if ($Commentc->isValid())
 		{
 			$Commentc->isNew() ? $this->insertCommentc($Commentc) : $this->updateCommentc($Commentc);
+			
 		}
 		else
 		{
@@ -52,7 +54,7 @@ abstract class CommentcManager extends Manager
 	
 	/**
 	 * Méthode permettant de modifier un commentaire.
-	 * @param $Commentc Le commentaire à modifier
+	 * @param Commentc $Commentc commentaire à modifier
 	 * @return void
 	 */
 	abstract protected function updateCommentc(Commentc $Commentc);

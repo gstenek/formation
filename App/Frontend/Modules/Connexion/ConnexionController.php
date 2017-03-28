@@ -45,6 +45,7 @@ class ConnexionController extends BackController
 		$this->page->addVar('form', $form->createView());
 		$this->page->addVar('submit', 'Connexion');
 		$this->page->addVar('action', '');
+		$this->page->addVar('title_form', 'Connexion');
 	}
 	
 	public function executeLogout(HTTPRequest $request)

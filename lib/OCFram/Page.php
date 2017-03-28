@@ -12,9 +12,13 @@ namespace OCFram;
 
 class Page extends ApplicationComponent
 {
+	const DEFAULT_TYPE_VIEW = 'php';
+		
 	protected $contentFile;
 	protected $vars = [];
 	
+	protected $typeView = Page::DEFAULT_TYPE_VIEW;
+		
 	public function addVar($var, $value)
 	{
 		if (!is_string($var) || is_numeric($var) || empty($var))
@@ -32,16 +36,23 @@ class Page extends ApplicationComponent
 			throw new \RuntimeException('La vue spécifiée n\'existe pas');
 		}
 		
+		
 		$user = $this->app->user();
 		
 		extract($this->vars);
 		
 		ob_start();
 		require $this->contentFile;
-		$content = ob_get_clean();
 		
-		ob_start();
-		require __DIR__.'/../../App/'.$this->app->name().'/Templates/layout.php';
+		// si le type de vue demandé est php on inclue le template de base
+		if('php' == $this->typeView)
+		{
+			$content = ob_get_clean();
+			
+			ob_start();
+			require __DIR__.'/../../App/'.$this->app->name().'/Templates/layout.php';
+		}
+		
 		return ob_get_clean();
 	}
 	
@@ -53,5 +64,12 @@ class Page extends ApplicationComponent
 		}
 		
 		$this->contentFile = $contentFile;
+	}
+	
+	/**
+	 * @param string $typeView
+	 */
+	public function setTypeView( $typeView ) {
+		$this->typeView = $typeView;
 	}
 }

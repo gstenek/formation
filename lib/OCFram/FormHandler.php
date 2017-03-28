@@ -26,7 +26,6 @@ class FormHandler
 		if($this->request->method() == 'POST' && $this->form->isValid())
 		{
 			$this->manager->save($this->form->entity());
-			
 			return true;
 		}
 		foreach ( $this->form->Fields() as $field ) {

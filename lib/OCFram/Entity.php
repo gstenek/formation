@@ -13,7 +13,7 @@ namespace OCFram;
 
 
 
-abstract class Entity implements \ArrayAccess {
+abstract class Entity implements \ArrayAccess, \JsonSerializable {
 	
 	// Utilisation du trait Hydrator pour que nos entités puissent être hydratées
 	use Hydrator;
@@ -101,4 +101,38 @@ abstract class Entity implements \ArrayAccess {
 	public function setReferences( Entity $Entity, $name ) {
 		$this->References[$name] = $Entity;
 	}
+	
+	
+	
+	/**
+	 * @return array
+	 */
+	public function jsonSerialize() {
+		return $this->jsonSerializeCustom();
+	}
+	
+	protected function jsonSerializeCustom(array $exclude_column_a = []) {
+		
+		$exclude_column_a = array_merge($exclude_column_a,['References']);
+		
+		$ReflexionClass       = new \ReflectionClass( static::class );
+		$ReflectionProperty_a = $ReflexionClass->getProperties();
+		
+		$return = [];
+		
+		foreach ( $ReflectionProperty_a as $ReflectionProperty ) {
+			if (!in_array($ReflectionProperty->getName(),$exclude_column_a)) {
+				$return[ $ReflectionProperty->getName() ] = $this->{$ReflectionProperty->getName()}();
+			}
+		}
+		
+		foreach( $this->References as $ref_name=>$value) {
+			if (!in_array($ref_name,$exclude_column_a)) {
+				$return[ $ref_name ] = $this->References($ref_name);
+			}
+		}
+		
+		return $return;
+	}
+	
 }

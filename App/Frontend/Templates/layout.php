@@ -11,6 +11,7 @@ $Router_backend = \OCFram\RouterFactory::getRouter('Backend');
 <!DOCTYPE html>
 <html>
 	<head>
+		<script src="./js/jquery-3.2.0.min.js"></script>
 		<title>
 			<?= isset($title) ? $title : 'Mon super site' ?>
 		</title>		<meta charset="utf-8" />

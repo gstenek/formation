@@ -13,6 +13,9 @@ class TextField extends Field
 	protected $cols;
 	protected $rows;
 	
+	/**
+	 * @return string
+	 */
 	public function buildWidget()
 	{
 		$widget = '';
@@ -41,7 +44,9 @@ class TextField extends Field
 			$widget .= htmlspecialchars($this->value);
 		}
 		
-		return $widget.'</textarea>';
+		$widget.= '</textarea>';
+		
+		return $widget.parent::buildWidget();
 	}
 	
 	public function setCols($cols)

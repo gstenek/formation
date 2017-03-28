@@ -22,7 +22,7 @@ class SubscriptionController extends BackController
 			$this->executePutMember($request);
 		}else{
 			$this->page->addVar('title', 'Subscription');
-			
+			$this->page->addVar('title_form', 'Subscription');
 			$this->page->addVar('action', 'PutMember');
 			
 			$formBuilder = new SubscriptionFormBuilder(new Memberc(),$this);
@@ -66,6 +66,7 @@ class SubscriptionController extends BackController
 			$this->app->httpResponse()->redirect( '/admin/' );
 		}
 		$this->page->addVar('title', 'Subscription');
+		$this->page->addVar('title_form', 'Subscription');
 		$this->page->addVar('form', $form->createView());
 		$this->page->addVar('submit', 'Inscription');
 		$this->page->addVar('action', '');

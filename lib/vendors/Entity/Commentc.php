@@ -10,56 +10,53 @@ namespace Entity;
 
 use \OCFram\Entity;
 
-class Commentc extends Entity
-{
-	protected $fk_NCE,
-		$fk_MMC,
-		$fk_NNG,
-		$visitor,
-		$content,
-		$date;
-	
-	const AUTEUR_INVALIDE = 1;
+class Commentc extends Entity implements \JsonSerializable {
+	protected $fk_NCE, $fk_MMC, $fk_NNG, $visitor, $content, $date;
+	const AUTEUR_INVALIDE  = 1;
 	const CONTENU_INVALIDE = 2;
-	
 	const NCE_INVALID = 1;
-	const NCE_VALID = 2;
-	const CODE_TABLE = 'NCC';
+	const NCE_VALID   = 2;
+	const CODE_TABLE  = 'NCC';
 	
 	public function __construct( array $donnees = [] ) {
 		
 		$result = [];
 		
-		$simple_column = Commentc::CODE_TABLE.'_';
-		foreach ($donnees as $key => $value)
-		{
+		$simple_column = Commentc::CODE_TABLE . '_';
+		foreach ( $donnees as $key => $value ) {
 			
-			$newkey = str_replace($simple_column,'',$key);
-			if(!(strlen($newkey) == strlen($key))){
-				if(is_callable([$this,$newkey]))
-				{
-					$result[$newkey] = $value;
+			$newkey = str_replace( $simple_column, '', $key );
+			if ( !( strlen( $newkey ) == strlen( $key ) ) ) {
+				if ( is_callable( [
+					$this,
+					$newkey,
+				] ) ) {
+					$result[ $newkey ] = $value;
 				}
-			}elseif (is_callable([$this,$key])){
-				$result[$key] = $value;
 			}
-			
+			elseif ( is_callable( [
+				$this,
+				$key,
+			] ) ) {
+				$result[ $key ] = $value;
+			}
 		}
 		parent::__construct( $result );
 	}
 	
-	public function isValid()
-	{
-		return !((empty($this->fk_MMC) && empty($this->visitor)) || empty($this->content));
+	public function isValid() {
+		return !( ( empty( $this->fk_MMC ) && empty( $this->visitor ) ) || empty( $this->content ) );
 	}
 	
-	public function isEqual(Commentc $Commentc)
-	{
-		if($this->content == $Commentc->content())
+	public function isEqual( Commentc $Commentc ) {
+		if ( $this->content == $Commentc->content() ) {
 			return true;
-		else return false;
+		}
+		else {
+			return false;
+		}
 	}
-
+	
 	/**
 	 * @return mixed
 	 */
@@ -113,7 +110,7 @@ class Commentc extends Entity
 	 * @param mixed $visitor
 	 */
 	public function setVisitor( $visitor ) {
-		$this->visitor = strip_tags($visitor, PARENT::TAGS_ALLOWED);
+		$this->visitor = strip_tags( $visitor, PARENT::TAGS_ALLOWED );
 	}
 	
 	/**
@@ -127,7 +124,7 @@ class Commentc extends Entity
 	 * @param mixed $content
 	 */
 	public function setContent( $content ) {
-		$this->content = strip_tags($content, PARENT::TAGS_ALLOWED);
+		$this->content = strip_tags( $content, PARENT::TAGS_ALLOWED );
 	}
 	
 	/**
@@ -144,4 +141,10 @@ class Commentc extends Entity
 		$this->date = $date;
 	}
 	
+	/**
+	 * @return array
+	 */
+	public function jsonSerialize() {
+		return $this->jsonSerializeCustom();
+	}
 }

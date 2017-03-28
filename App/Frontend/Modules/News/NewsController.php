@@ -20,6 +20,7 @@ use \OCFram\Form;
 use OCFram\RouterFactory;
 use \OCFram\StringField;
 use \OCFram\TextField;
+use \OCFram\Field;
 use \FormBuilder\CommentFormBuilder;
 use \OCFram\FormHandler;
 
@@ -54,8 +55,7 @@ class NewsController extends BackController
 			
 			
 		}
-		
-		
+				
 		// On ajoute la variable $listeNews à la vue.
 		$this->page->addVar('listeNews', $listeNews);
 	}
@@ -88,6 +88,7 @@ class NewsController extends BackController
 				$this->page->addVar( 'submit', 'Valider' );
 				$this->page->addVar( 'action', '' );
 				$this->page->addVar( 'title', 'Edition d\'une news' );
+				$this->page->addVar( 'title_form', 'Edition d\'une news' );
 				
 				/** @var Newg $Newg */
 				$Newg = $this->managers->getManagerOf( 'Newg' )->getNewgValidUsingNewcId($Newc->id());
@@ -116,14 +117,14 @@ class NewsController extends BackController
 			}
 			
 			
-		}else{ // Sinon on ajoute une novuelle news
+		}else{ // Sinon on ajoute une nouvelle news
 			
 			if ( $request->postData( 'submit' ) ) { // si le formulaire a été validée
 				$this->executePutNews( $request, new Newg() );
 			}
 			else { // Sinon on construit le formulaire
+				$this->page->addVar( 'title_form', 'Ajout d\'une news' );
 				$this->page->addVar( 'title', 'Ajout d\'une news' );
-				
 				$formBuilder = new NewsFormBuilder( new Newg() );
 				$formBuilder->build();
 				
@@ -180,6 +181,7 @@ class NewsController extends BackController
 			}
 		}
 		
+		$this->page->addVar('title_form', 'Ajout d\'une news');
 		$this->page->addVar('title', 'Ajout d\'une news');
 		$this->page->addVar('form', $form->createView());
 		$this->page->addVar('submit', 'Valider');
@@ -206,58 +208,109 @@ class NewsController extends BackController
 		$this->page->addVar('title', $Newg->title());
 		$this->page->addVar('Newg', $Newg);
 		$this->page->addVar('comments', $comments);
-	}
-	
-	public function executeBuildCommentForm(HTTPRequest $request)
-	{
-		if($request->postData('submit')) {
-			$this->executePutCommentc($request);
-		}else{
-			
-			$formBuilder = new CommentFormBuilder(new Commentc(),$this);
-			$formBuilder->build();
-			
-			$form = $formBuilder->form();
-			
-			$this->page->addVar('title', 'Ajout d\'un commentaire');
-			$this->page->addVar('form', $form->createView());
-			$this->page->addVar('submit', 'Valider');
-			$this->page->addVar('action', '');
-		}
 		
+		// création du form
+		$formBuilder = new CommentFormBuilder(new Commentc(),$this);
+		$formBuilder->build();
+		
+		$form = $formBuilder->form();
+		
+		$this->page->addVar('title_form', 'Ajout d\'un commentaire');
+		$this->page->addVar('form', $form->createView());
+		$this->page->addVar('submit', 'Valider');
+		$this->page->addVar('action', self::getLinkToPutComment($Newg));
 	}
 	
 	public function executePutCommentc(HTTPRequest $request){
-		$Newg = $this->managers->getManagerOf('Newg')->getNewgValidUsingNewcId($request->getData('news'));
+		
+		$news_id= NULL;
+		
+		if($request->getExists('news'))
+		{
+			$news_id = $request->getData('news');
+		}
+		
+		if($request->postExists('news'))
+		{
+			$news_id = $request->postData('news');
+		}
+		
+		if($news_id == NULL)
+		{
+			$this->app->httpResponse()->redirect(self::getLinkToIndex());
+		}
+		
+		$Newg = $this->managers->getManagerOf('Newg')->getNewgValidUsingNewcId($news_id);
 		$Commentc = new Commentc([
 			'content' => $request->postData('content'),
 			'fk_NCE' => Commentc::NCE_VALID,
 			'date' => date("Y-m-d H:i:s"),
-			'fk_NNG' => $Newg->id()
+			'fk_NNG' => $Newg->id(),
 		]);
+		
 		if($this->app()->user()->isAuthenticated()){
 			$Commentc->setFk_MMC($this->app()->user()->getAttribute('Memberc')->id());
+			$Commentc->setReferences(new Memberc(['id' =>$Commentc->fk_MMC(), 'login' => $this->app()->user()->getAttribute('Memberc')->login()]), 'Memberc');
 		}else{
 			$Commentc->setVisitor($request->postData('visitor'));
 		}
-		
+		/** @var CommentFormBuilder $formBuilder */
 		$formBuilder = new CommentFormBuilder($Commentc,$this);
 		$formBuilder->build();
+		/** @var Form $form */
 		$form = $formBuilder->form();
 		
 		// On récupère le gestionnaire de formulaire (le paramètre de getManagerOf() est bien entendu à remplacer).
+		/** @var FormHandler $formHandler */
 		$formHandler = new FormHandler($form, $this->managers->getManagerOf('Commentc'), $request);
 		
+		$header_accept = apache_request_headers()['Accept'];
+		$flag_json = true;
+		$data['flag_json'] = 'true';
+		$data['status'] = 'error';
+		
+		// s'il n'y a pas de json attendu par la requête
+		if(strlen(str_replace('json','',$header_accept)) == strlen($header_accept))
+		{
+			$flag_json = false;
+		}
+				
 		if ($formHandler->process())
 		{
-			$this->app->user()->setFlash('Merci pour votre commentaire !');
-			$this->app->httpResponse()->redirect('news-'.$request->getData('news').'.html');
+			// si pas json fait ça
+			if(!$flag_json)
+			{
+				$this->app->user()->setFlash('Merci pour votre commentaire !');
+				$this->app->httpResponse()->redirect(self::getLinkToBuildNewsDetail($Newg));
+			}
+			
+			// sinon
+			$data['status'] = 'success';
+			
+			// récupérer le commentaire
+			/** @var Commentc $Commentc_inserted */
+			$data['Comment'] = $Commentc;
+			
 		}
 		
-		$this->page->addVar('title', 'Ajout d\'un commentaire');
-		$this->page->addVar('form', $form->createView());
-		$this->page->addVar('submit', 'Valider');
-		$this->page->addVar('action', '');
+		if($flag_json)
+		{
+			// Parcourir les champs pour détecter des éventuelles erreurs
+			/** @var Field $Field */
+			foreach ( $form->Fields() as $Field ) {
+				if($Field->errorMessage() != NULL)
+				{
+					$data['error_a'][$Field->name()] = $Field->errorMessage();
+				}
+			}
+			$this->page->setTypeView('json');
+			$this->page->addVar('data', $data);
+		}else{
+			$this->page->addVar('title_form', 'Ajout d\'un commentaire');
+			$this->page->addVar('form', $form->createView());
+			$this->page->addVar('submit', 'Valider');
+			$this->page->addVar('action', '');
+		}
 	}
 
 	public static function getLinkToIndex( ) {
@@ -265,6 +318,10 @@ class NewsController extends BackController
 	}
 	public static function getLinkToBuildNewsDetail(Newg $Newg) {
 		return RouterFactory::getRouter('Frontend')->getRouteFromAction('News','BuildNewsDetail',array('id' =>$Newg->fk_NNC()->id()) )->generateHref()	;
+	}
+	
+	public static function getLinkToPutComment(Newg $Newg) {
+		return RouterFactory::getRouter('Frontend')->getRouteFromAction('News','PutCommentc',array('news' =>$Newg->fk_NNC()->id()) )->generateHref()	;
 	}
 
 	

@@ -73,9 +73,7 @@ class Form
 		$this->entity = $entity;
 	}
 	
-	/**
-	 * @return array
-	 */
+	/** @return Field[] */
 	public function Fields(){
 		return $this->fields;
 	}

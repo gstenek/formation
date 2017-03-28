@@ -8,6 +8,7 @@
 
 namespace Model;
 
+use Entity\Newc;
 use \Entity\Newg;
 
 class NewgManagerPDO extends NewgManager
@@ -55,7 +56,11 @@ class NewgManagerPDO extends NewgManager
 	 * @internal param L $newg_id 'identifiant de la news à récupérer
 	 */
 	public function getNewgValidUsingNewcId( $newc_id ) {
-		$q = $this->dao->prepare('SELECT  NNG_id, NNG_fk_MMC, NNG_fk_NNE, NNG_date_edition, NNG_title, NNG_content, NNG_fk_NNC FROM t_new_newg WHERE NNG_fk_NNC = :id AND NNG_fk_NNE = :NNE');
+		$q = $this->dao->prepare('SELECT  * 
+								FROM t_new_newg 
+								INNER JOIN t_new_newc ON NNG_fk_NNC = NNC_id 
+								WHERE NNG_fk_NNC = :id 
+								AND NNG_fk_NNE = :NNE');
 		$q->bindValue(':id', $newc_id);
 		$q->bindValue(':NNE', Newg::NNE_VALID);
 		$q->execute();
@@ -68,6 +73,7 @@ class NewgManagerPDO extends NewgManager
 			return false;
 		}else{
 			$Newg = new Newg($result);
+			$Newg->setFk_NNC(new Newc($result));
 			return $Newg;
 		}
 		

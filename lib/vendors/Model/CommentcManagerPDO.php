@@ -48,7 +48,7 @@ class CommentcManagerPDO extends CommentcManager
 	/**
 	 * Méthode permettant d'ajouter un commentaire
 	 *
-	 * @param Commentc|Le $Commentc Le commentaire à ajouter
+	 * @param Commentc $Commentc Le commentaire à ajouter
 	 *
 	 * @return void
 	 */
@@ -67,8 +67,14 @@ class CommentcManagerPDO extends CommentcManager
 		$q->execute();
 		
 		$Commentc->setId($this->dao->lastInsertId());
+		
+		
 	}
 	
+	/**
+	 * @param Commentc $Commentc
+	 * @return void
+	 */
 	protected function updateCommentc(Commentc $Commentc)
 	{
 		$q = $this->dao->prepare('UPDATE t_new_commentc

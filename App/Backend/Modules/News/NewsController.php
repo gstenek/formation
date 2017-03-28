@@ -43,6 +43,7 @@ class NewsController extends BackController
 				$this->page->addVar( 'submit', 'Valider' );
 				$this->page->addVar( 'action', '' );
 				$this->page->addVar( 'title', 'Modification d\'un commentaire' );
+				$this->page->addVar( 'title_form', 'Modification d\'un commentaire' );
 				
 				$Commentc = $this->managers->getManagerOf( 'Commentc' )->getCommentcUsingCommentcId( $request->getData( 'id' ) );
 				
@@ -100,6 +101,7 @@ class NewsController extends BackController
 		}
 		
 		$this->page->addVar('title', 'Modification  d\'un commentaire');
+		$this->page->addVar('title_form', 'Modification  d\'un commentaire');
 		$this->page->addVar('form', $form->createView());
 		$this->page->addVar('submit', 'Valider');
 		$this->page->addVar('action', '');

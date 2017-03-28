@@ -5,6 +5,7 @@
 	<route url="/news-insert.html" module="News" action="BuildNews" ></route>
 	<route url="/news-update-([0-9]+)\.html" module="News" action="BuildNews" vars="id" alias="/news-update-[id].html"></route>
 	<route url="/commenter-([0-9]+)\.html" module="News" action="BuildCommentForm" vars="news" alias="/commenter-[news].html"></route>
+	<route url="/comment/process-([0-9]+)\.html" module="News" action="PutCommentc" vars="news" alias="/comment/process-[news].html"></route>
 	<route url="/subscription" module="Subscription" action="BuildSubscription"></route>
 	<route url="/logout" module="Connexion" action="logout" ></route>
 	<route url="/login" module="Connexion" action="index" ></route>

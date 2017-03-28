@@ -10,6 +10,8 @@ namespace OCFram;
 
 abstract class Field
 {
+	const NAME_DIV_ERROR = 'error';
+	
 	use Hydrator;
 	
 	protected $errorMessage;
@@ -27,7 +29,13 @@ abstract class Field
 		}
 	}
 	
-	abstract public function buildWidget();
+	/**
+	 * @return string
+	 */
+	public function buildWidget(){
+		return '<div class="'.self::NAME_DIV_ERROR.'-'.static::name().'"></div>';
+		
+	}
 	
 	public function isValid()
 	{
@@ -124,5 +132,12 @@ abstract class Field
 		{
 			$this->value = $value;
 		}
+	}
+	
+	/**
+	 * @return mixed
+	 */
+	public function errorMessage() {
+		return $this->errorMessage;
 	}
 }
