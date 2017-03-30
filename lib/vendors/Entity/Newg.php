@@ -155,18 +155,18 @@ class Newg extends Entity {
 	}
 	
 	/**
-	 * @return Entity|null
+	 * @return Newc|null
 	 */
-	public function Newg() {
-		return $this->References('Newg');
+	public function Newc() {
+		return $this->References('Newc');
 	}
 	
 	/**
-	 * @param Newg $Newg
+	 * @param Newc $Newc
 	 *
 	 */
-	public function setNewg( Newg $Newg) {
-		$this->setReferences($Newg ,'Newg');
+	public function setNewc( Newc $Newc) {
+		$this->setReferences($Newc ,'Newc');
 	}
 	
 	

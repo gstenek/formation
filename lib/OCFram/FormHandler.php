@@ -21,6 +21,9 @@ class FormHandler
 		$this->setRequest($request);
 	}
 	
+	/**
+	 * @return bool
+	 */
 	public function process()
 	{
 		if($this->request->method() == 'POST' && $this->form->isValid())
@@ -50,5 +53,12 @@ class FormHandler
 	public function setRequest(HTTPRequest $request)
 	{
 		$this->request = $request;
+	}
+	
+	/**
+	 * @return Form
+	 */
+	public function form() {
+		return $this->form;
 	}
 }

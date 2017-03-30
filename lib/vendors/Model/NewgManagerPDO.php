@@ -8,6 +8,7 @@
 
 namespace Model;
 
+use Entity\Memberc;
 use Entity\Newc;
 use \Entity\Newg;
 
@@ -26,8 +27,10 @@ class NewgManagerPDO extends NewgManager
 	 * @internal param L $newg_id 'identifiant de la news à récupérer
 	 */
 	public function getNewgUsingNewgId( $newg_id ) {
-		$q = $this->dao->prepare('SELECT  NNG_id, NNG_fk_MMC, NNG_fk_NNE, NNG_date_edition, NNG_title, NNG_content, NNG_fk_NNC
+		$q = $this->dao->prepare('SELECT  *
 								FROM t_new_newg
+								INNER JOIN t_new_newc ON NNC_id = NNG_fk_NNC
+								INNER JOIN t_mem_memberc ON MMC_id = NNG_fk_MMC
 								WHERE NNG_id = :id ');
 		$q->bindValue(':id', $newg_id);
 		$q->execute();
@@ -40,6 +43,8 @@ class NewgManagerPDO extends NewgManager
 			return false;
 		}else{
 			$Newg = new Newg($result);
+			$Newg->setMemberc(new Memberc($result));
+			$Newg->setNewc(new Newc($result));
 			return $Newg;
 		}
 		
@@ -59,6 +64,7 @@ class NewgManagerPDO extends NewgManager
 		$q = $this->dao->prepare('SELECT  * 
 								FROM t_new_newg 
 								INNER JOIN t_new_newc ON NNG_fk_NNC = NNC_id 
+								INNER JOIN t_mem_memberc ON NNG_fk_MMC = MMC_id
 								WHERE NNG_fk_NNC = :id 
 								AND NNG_fk_NNE = :NNE');
 		$q->bindValue(':id', $newc_id);
@@ -73,7 +79,9 @@ class NewgManagerPDO extends NewgManager
 			return false;
 		}else{
 			$Newg = new Newg($result);
-			$Newg->setFk_NNC(new Newc($result));
+			$Newg->setNewc(new Newc($result));
+			$Newg->setMemberc(new Memberc($result));
+			//$Newg->setFk_NNC(new Newc($result));
 			return $Newg;
 		}
 		

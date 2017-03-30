@@ -16,7 +16,7 @@ class NewcManagerPDO extends NewcManager
 {
 	public function getNewsListUsingNNE( $debut = -1, $limite = -1, $newc_nne ) {
 		
-		$q = $this->dao->prepare('SELECT MMC_id, MMC_login, NNG_id, NNG_title, NNG_content, NNG_date_edition, NNC_id, NNC_date_creation
+		$q = $this->dao->prepare('SELECT *
 									FROM t_new_newc
 									INNER JOIN t_new_newg ON NNC_id = NNG_fk_NNC
 									INNER JOIN t_mem_memberc ON NNC_fk_MMC = MMC_id
@@ -39,16 +39,9 @@ class NewcManagerPDO extends NewcManager
 		$news = [];
 		foreach ( $result as $key => $line ) {
 			
-			$Memberc = new Memberc(['MMC_id' => $line['MMC_id'],
-						 'MMC_login' => $line['MMC_login']]);
-			$Newg = new Newg(['NNG_id' => $line['NNG_id'],
-							  'NNG_title' => $line['NNG_title'],
-							  'NNG_date_edition' => $line['NNG_date_edition'],
-							  'NNG_content' => $line['NNG_content']]);
-			$Newc = new Newc(['NNC_id' => $line['NNC_id'],
-							  'NNC_date_creation' => $line['NNC_date_creation']]);
-			$Newg->setFk_MMC($Memberc);
-			$Newg->setFk_NNC($Newc);
+			$Newg = new Newg($line);
+			$Newg->setMemberc(new Memberc($line));
+			$Newg->setNewc(new Newc($line));
 			
 			$news[] = $Newg;
 		}

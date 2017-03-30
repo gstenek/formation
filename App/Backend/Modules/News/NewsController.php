@@ -17,6 +17,7 @@ use \Entity\News;
 use \Entity\Commentc;
 use \OCFram\FormHandler;
 use FormBuilder\CommentFormBuilder;
+use OCFram\RouterFactory;
 
 class NewsController extends BackController
 {
@@ -128,6 +129,24 @@ class NewsController extends BackController
 		
 		$Newg =  $this->managers->getManagerOf('Newg')->getNewgUsingNewgId($Commentc->fk_NNG());
 		$this->app->httpResponse()->redirect('/news-'.$Newg->fk_NNC().'.html');
+	}
+	
+	/**
+	 * @param Commentc $Commentc
+	 *
+	 * @return string
+	 */
+	public static function getLinkToUpdateComment(Commentc $Commentc) {
+		return RouterFactory::getRouter('Backend')->getRouteFromAction('News','BuildCommentForm',array('id' =>$Commentc->id()) )->generateHref()	;
+	}
+	
+	/**
+	 * @param Commentc $Commentc
+	 *
+	 * @return string
+	 */
+	public static function getLinkToClearComment(Commentc $Commentc) {
+		return RouterFactory::getRouter('Backend')->getRouteFromAction('News','ClearComment',array('id' =>$Commentc->id()) )->generateHref()	;
 	}
 	
 }

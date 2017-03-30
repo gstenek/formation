@@ -11,33 +11,38 @@
 $(document).ready(function() {
 	
 	// Lorsque je soumets le formulaire
-	$('.js-form-comment').on('submit', function(e) {
+	$('.js-form').on('submit', function(e) {
 		
 		e.preventDefault(); // J'empêche le comportement par défaut du navigateur, c-à-d de soumettre le formulaire
 		
 		var $this = $(this); // L'objet jQuery du formulaire
+		
+		$this.find("#btn-submit").attr("disabled", true); // disable button after submit
 
 		console.log($this.serialize());
 		console.log($this.attr('action'));
+		console.log('Début process : '+$this.find("#btn-submit").attr("disabled"));
+		$this.css('background-image','url(\'http://media.giphy.com/media/sIIhZliB2McAo/giphy.gif\')');
+		$this.css('background-size','100% 100%');
 		
 		// Envoi de la requête HTTP en mode asynchrone
 		$.ajax({
-			url: $this.attr('action'), // Le nom du fichier indiqué dans le formulaire
+			url: $this.attr('data-js-action'), // Le nom du fichier indiqué dans le formulaire
 			type: 'POST', // La méthode indiquée dans le formulaire (get ou post)
 			data: $this.serialize(), // Je sérialise les données (j'envoie toutes les valeurs présentes dans le formulaire)
 			dataType: 'json',
 			success: function(data) { // Je récupère la réponse du fichier PHP
-				
+				$this.removeAttr('style');
 				// supprimer les données des divs d'erreurs
 				$this.find('div[class^="error-"]').empty();
 				
 				// s'il y a des erreurs
-				if(data.hasOwnProperty('error_a')) {
+				if(data['content'].hasOwnProperty('error_a')) {
 					
 					console.log( 'il y a des erreurs' );
 					
 					// générer l'html de l'erreur
-					$.each( data['error_a'], function( name_field, value_error ){
+					$.each( data['content']['error_a'], function( name_field, value_error ){
 						console.log(name_field+' : '+value_error);
 						
 						$this.find('.error-'+name_field+'').append("<p>"+value_error+"</p>");
@@ -46,20 +51,16 @@ $(document).ready(function() {
 					// s'il n'y a pas d'erreur dans le formulaire
 				}else{
 					
-					// on génère l'html du nouveau commentaire
-					if(data['Comment']['fk_MMC'] != null)					{
-						$('#comment').append("Posté par <strong>"+data['Comment']['Memberc']['login']+"</strong> le "+data['Comment']['date']);
-					}else{
-						$('#comment').append("Posté par <strong>"+data['Comment']['visitor']+"</strong> le "+data['Comment']['date']);
-					}
-					
-					$('#comment').append("<p>"+data['Comment']['content']+"</p>");
-					
+					appendComment(data.content.Comment,data.content.url_delete, data.content.url_update);
+										
 					// on vide les champs des input
 					$this.find("input[type=text], textarea").val("");
 								
 				}
+			},
+			complete: function(){
+				$this.find("#btn-submit").attr("disabled", false); // enable button after ajax completed
+				console.log('Fin process : '+$this.find("#btn-submit").attr("disabled"));
 			}
-		});
-	});
+		})});
 });

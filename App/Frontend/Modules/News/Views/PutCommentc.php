@@ -1,2 +1,2 @@
 <?php
-	echo json_encode($data);
+require __DIR__ . '/BuildNewsDetail.php';

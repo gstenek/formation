@@ -141,6 +141,14 @@ class Commentc extends Entity implements \JsonSerializable {
 		$this->date = $date;
 	}
 	
+	public function setMemberc( Memberc $Memberc  ) {
+		$this->setReferences($Memberc, 'Memberc');
+	}
+	
+	public function Memberc( ) {
+		return $this->References(__FUNCTION__);
+	}
+	
 	/**
 	 * @return array
 	 */

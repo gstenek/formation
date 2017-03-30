@@ -74,22 +74,14 @@ class Router
 	{
 		foreach ($this->routes as $route) // pour chaque routes
 		{
+			/** @var Route $route */
 			// Si les actions et modules correspondent à la route
 			if($route->matchModuleAction($module,$action,$vars))
 			{
-				if($route->hasVars())
-				{
-					if(count($route->varsNames()) == count($vars))
-					{
-						$route->setVars($vars);
-					}else{
-						throw new \RuntimeException('La route ne correspond (nombre de vars invalide)', self::NO_ROUTE);
-					}
-				}
-				
+				$route->setVars($vars);
 				return $route;
 			}
 		}
-		throw new \RuntimeException('Aucune route ne correspond à ('.$module.$action.')', self::NO_ROUTE);
+		throw new \RuntimeException('Aucune route ne correspond à ('.$module.'/'.$action.' avec les vars '.implode(',',array_keys($vars)), self::NO_ROUTE);
 	}
 }

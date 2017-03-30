@@ -46,10 +46,18 @@ abstract class CommentcManager extends Manager
 	 *
 	 * @param $newc_id
 	 *
-	 * @return array
+	 * @return Commentc[]
 	 * @internal param La $news news sur laquelle on veut récupérer les commentaires
 	 */
 	abstract public function  getCommentcListUsingNewcId($newc_id);
+	
+	/**
+	 * @param $newc_id
+	 * @param $commentc_id
+	 *
+	 * @return mixed
+	 */
+	abstract public function  getLastCommentcListUsingNewcIdAndCommentcId($newc_id, $commentc_id);
 	
 	
 	/**

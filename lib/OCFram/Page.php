@@ -12,13 +12,10 @@ namespace OCFram;
 
 class Page extends ApplicationComponent
 {
-	const DEFAULT_TYPE_VIEW = 'php';
-		
+	
 	protected $contentFile;
 	protected $vars = [];
-	
-	protected $typeView = Page::DEFAULT_TYPE_VIEW;
-		
+			
 	public function addVar($var, $value)
 	{
 		if (!is_string($var) || is_numeric($var) || empty($var))
@@ -35,8 +32,19 @@ class Page extends ApplicationComponent
 		{
 			throw new \RuntimeException('La vue spécifiée n\'existe pas');
 		}
-		
-		
+		switch($format = $this->getReturnFormat()) {
+			case 'html' :
+				return $this->getGeneratedPageHTML();
+				break;
+			case 'json' :
+				return $this->getGeneratedPageJSON();
+				break;
+			default :
+				throw new \Exception('Format de retour non géré : '.$format);
+		}
+	}
+	
+	protected function getGeneratedPageHTML() {
 		$user = $this->app->user();
 		
 		extract($this->vars);
@@ -44,17 +52,36 @@ class Page extends ApplicationComponent
 		ob_start();
 		require $this->contentFile;
 		
-		// si le type de vue demandé est php on inclue le template de base
-		if('php' == $this->typeView)
-		{
-			$content = ob_get_clean();
-			
-			ob_start();
-			require __DIR__.'/../../App/'.$this->app->name().'/Templates/layout.php';
-		}
+		$content = ob_get_clean();
+		
+		ob_start();
+		require __DIR__.'/../../App/'.$this->app->name().'/Templates/layout.php';
 		
 		return ob_get_clean();
 	}
+	
+	protected function getGeneratedPageJSON() {
+		$this->app()->httpResponse()->addHeader('Content-Type: application/json;charset=utf-8');
+		
+		extract($this->vars);
+		
+		$content = require $this->contentFile;
+						
+		return json_encode(require __DIR__.'/../../App/'.$this->app->name().'/Templates/layout.json.php');
+	}
+	
+	private function getReturnFormat() {
+		if (!function_exists('apache_request_headers')) {
+			return 'html';
+		}
+		$header_accept = apache_request_headers()['Accept'];
+		if(preg_match('$application/json$',$header_accept)) {
+			return 'json';
+		}
+		
+		return 'html';
+
+}
 	
 	public function setContentFile($contentFile)
 	{

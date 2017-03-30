@@ -49,18 +49,12 @@ class Route
 	
 	public function matchModuleAction($module, $action, array $vars)
 	{
-		if ($this->module == $module && $this->action == $action && sizeof($vars) == sizeof($this->varsNames()))
+		if ($this->module == $module && $this->action == $action && count($vars) == count($this->varsNames()))
 		{
-				foreach ( $this->varsNames() as $index => $varname ) {
-					if(!isset($vars[$varname]))
-					{
-						return false;
-					}
-				}
-			
-			return true;
+			if ( 0 === count(array_diff($this->varsNames(),array_keys($vars)))) {
+				return true;
+			}
 		}
-		
 		return false;
 		
 	}

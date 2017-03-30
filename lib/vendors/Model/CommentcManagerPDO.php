@@ -13,6 +13,11 @@ use Entity\Memberc;
 
 class CommentcManagerPDO extends CommentcManager
 {
+	/**
+	 * @param $newc_id
+	 *
+	 * @return Commentc[]
+	 */
 	public function getCommentcListUsingNewcId($newc_id)
 	{
 		
@@ -37,11 +42,51 @@ class CommentcManagerPDO extends CommentcManager
 			$Commentc_temp = new Commentc($Commentc);
 			$Memberc = new Memberc($Commentc);
 			$Memberc->setid($Commentc_temp->fk_MMC());
-			$Commentc_temp->setReferences($Memberc, 'Memberc');
+			$Commentc_temp->setMemberc($Memberc);
 			$Comments[] = $Commentc_temp;
 		}
 		
 		return $Comments;
+	}
+	
+	
+	/**
+	 * @param $newc_id
+	 * @param $commentc_id
+	 *
+	 * @return mixed
+	 */
+	public function getLastCommentcListUsingNewcIdAndCommentcId( $newc_id, $commentc_id ) {
+		
+		$q = $this->dao->prepare('SELECT NCC_id, NCC_fk_NCE, NCC_fk_MMC, NCC_content, NCC_visitor, NCC_date, NCC_fk_NNG, MMC_login
+									FROM t_new_commentc
+									INNER JOIN t_new_newg ON NCC_fk_NNG = NNG_id
+									INNER JOIN t_new_newc ON NNC_id = NNG_fk_NNC
+									LEFT OUTER JOIN t_mem_memberc ON NCC_fk_MMC = MMC_id
+									WHERE NNC_id = :NNC
+									AND NCC_fk_NCE = :NCE
+									AND NCC_id > :NCC_last_comment
+									GROUP BY NCC_id');
+		$q->bindValue(':NNC', $newc_id, \PDO::PARAM_INT);
+		$q->bindValue(':NCC_last_comment', $commentc_id, \PDO::PARAM_INT);
+		$q->bindValue(':NCE', Commentc::NCE_VALID, \PDO::PARAM_INT);
+		$q->execute();
+		
+		$q->setFetchMode(\PDO::FETCH_ASSOC );
+		
+		$result = $q->fetchAll();
+		$Comments = [];
+		foreach ($result as $key => $Commentc)
+		{
+			$Commentc_temp = new Commentc($Commentc);
+			$Memberc = new Memberc($Commentc);
+			$Memberc->setid($Commentc_temp->fk_MMC());
+			$Commentc_temp->setMemberc($Memberc);
+			$Comments[] = $Commentc_temp;
+		}
+		
+		return $Comments;
+		
 	}
 	
 	
@@ -115,7 +160,5 @@ class CommentcManagerPDO extends CommentcManager
 			return $Commentc;
 		}
 	}
-	
-	
 	
 }
