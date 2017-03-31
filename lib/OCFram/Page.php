@@ -24,6 +24,7 @@ class Page extends ApplicationComponent
 		}
 		
 		$this->vars[$var] = $value;
+		
 	}
 	
 	public function getGeneratedPage()

@@ -54,7 +54,7 @@ abstract class Entity implements \ArrayAccess, \JsonSerializable {
 	
 	public function offsetGet($var)
 	{
-		if (isset($this->$var) && is_callable([$this, $var]))
+		if ((isset($this->$var) || null != $this->References($var)) && is_callable([$this, $var]))
 		{
 			return $this->$var();
 		}

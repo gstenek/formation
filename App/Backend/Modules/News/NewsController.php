@@ -131,6 +131,14 @@ class NewsController extends BackController
 		$this->app->httpResponse()->redirect('/news-'.$Newg->fk_NNC().'.html');
 	}
 	
+	
+	/**
+	 * @return string
+	 */
+	public static function getLinkToIndex() {
+		return RouterFactory::getRouter('Backend')->getRouteFromAction('News','index')->generateHref()	;
+	}
+	
 	/**
 	 * @param Commentc $Commentc
 	 *

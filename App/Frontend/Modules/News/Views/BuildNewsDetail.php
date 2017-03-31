@@ -11,7 +11,7 @@
 	<script src="./js/jquery-3.2.0.min.js"></script>
 	<script src="./js/Comment/submit-process.js"></script>
 	<script src="./js/Comment/refresh-process.js"></script>
-	<p>Par <em><?= $Newg[ 'Memberc' ][ 'login' ] ?></em>, le <?= $Newg[ 'Newc' ][ 'date_creation' ] ?></p>
+	<p>Par <em><?= $Newg['Memberc'][ 'login' ] ?></em>, le <?= $Newg[ 'Newc' ][ 'date_creation' ] ?></p>
 	<h2><?= htmlspecialchars( $Newg->title() ) ?></h2>
 	<p><?= htmlspecialchars( $Newg->content() ) ?></p>
 

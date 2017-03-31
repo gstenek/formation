@@ -51,7 +51,13 @@ abstract class Application {
 		// On instancie le contrôleur.
 		
 		$controllerClass = 'App\\'.$this->name.'\\Modules\\'.$matchedRoute->module().'\\'.$matchedRoute->module().'Controller';
-		return new $controllerClass($this, $matchedRoute->module(), $matchedRoute->action());
+		
+		/** @var BackController $Controller */
+		$Controller =  new $controllerClass($this, $matchedRoute->module(), $matchedRoute->action());
+	
+		$Controller->authorizer()->checkFilter();
+		
+		return $Controller;
 	}
 	
 	abstract public function run();

@@ -8,13 +8,33 @@
 
 namespace App\Frontend\Modules\Connexion;
 
+use App\Frontend\FrontendApplication;
 use FormBuilder\ConnexionFormBuilder;
 use \OCFram\BackController;
+use OCFram\Filter;
+use OCFram\Filterable;
 use \OCFram\HTTPRequest;
 use \Entity\Memberc;
+use OCFram\RouterFactory;
 
-class ConnexionController extends BackController
+class ConnexionController extends BackController implements Filterable
 {
+	/**
+	 * Retourne un Filter ou une collection de filter en fonction de l'action courrante
+	 *
+	 * @return Filter|Filter[]|null
+	 */
+	public function getFilterableFilter() {
+		switch ( $this->action ) {
+			case "index" :
+				return [FrontendApplication::buildFilterUser($this->app(), 'Vous êtes déjà connecté.')];
+			case "logout" :
+				return [FrontendApplication::buildFilterGuest($this->app())];
+		}
+		
+		return null;
+	}
+	
 	public function executeIndex(HTTPRequest $request)
 	{
 		$this->page->addVar('title', 'Connexion');
@@ -59,6 +79,20 @@ class ConnexionController extends BackController
 		
 		// Redirect to homepage
 		$this->app->httpResponse()->redirect('/');
+	}
+	
+	/**
+	 * @return string
+	 */
+	public static function getLinkToIndex() {
+		return RouterFactory::getRouter( 'Frontend' )->getRouteFromAction( 'Connexion', 'index' )->generateHref();
+	}
+	
+	/**
+	 * @return string
+	 */
+	public static function getLinkToLogout() {
+		return RouterFactory::getRouter( 'Frontend' )->getRouteFromAction( 'Connexion', 'logout' )->generateHref();
 	}
 	
 }

@@ -8,14 +8,32 @@
 
 namespace App\Frontend\Modules\Subscription;
 
+use App\Frontend\FrontendApplication;
 use FormBuilder\SubscriptionFormBuilder;
 use \OCFram\BackController;
+use OCFram\Filter;
+use OCFram\Filterable;
 use \OCFram\HTTPRequest;
 use \Entity\Memberc;
 use \OCFram\FormHandler;
+use OCFram\RouterFactory;
 
-class SubscriptionController extends BackController
+class SubscriptionController extends BackController implements Filterable
 {
+	/**
+	 * Retourne un Filter ou une collection de filter en fonction de l'action courrante
+	 *
+	 * @return Filter|Filter[]|null
+	 */
+	public function getFilterableFilter() {
+		switch ( $this->action ) {
+			case "BuildSubscription" :
+				return [FrontendApplication::buildFilterUser($this->app(), 'Vous êtes déjà connecté.')];
+		}
+		
+		return null;
+	}
+	
 	public function executeBuildSubscription(HTTPRequest $request){
 		
 		if($request->postData('submit')) {
@@ -71,4 +89,12 @@ class SubscriptionController extends BackController
 		$this->page->addVar('submit', 'Inscription');
 		$this->page->addVar('action', '');
 	}
+	
+	/**
+	 * @return string
+	 */
+	public static function getLinkToSubscription() {
+		return RouterFactory::getRouter( 'Frontend' )->getRouteFromAction( 'Subscription', 'BuildSubscription' )->generateHref();
+	}
+	
 }

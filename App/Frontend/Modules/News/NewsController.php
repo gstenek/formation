@@ -8,11 +8,17 @@
 
 namespace App\Frontend\Modules\News;
 
+use App\Frontend\FrontendApplication;
 use Entity\Memberc;
 use Entity\Newg;
 use FormBuilder\NewsFormBuilder;
 use Model\NewcManager;
+use OCFram\Application;
+use OCFram\Authorizer;
 use \OCFram\BackController;
+use OCFram\Filter;
+use OCFram\Filterable;
+use OCFram\FilterGuest;
 use \OCFram\HTTPRequest;
 use \Entity\Commentc;
 use \Entity\Newc;
@@ -24,7 +30,30 @@ use \OCFram\Field;
 use \FormBuilder\CommentFormBuilder;
 use \OCFram\FormHandler;
 
-class NewsController extends BackController {
+class NewsController extends BackController implements Filterable {
+	/**
+	 * Retourne un Filter ou une collection de filter en fonction de l'action courrante
+	 *
+	 * @return Filter|Filter[]|null
+	 */
+	public function getFilterableFilter() {
+		switch ( $this->action ) {
+			case "index" :
+			case "BuildNewsDetail" :
+			case "BuildCommentForm" :
+			case "BuildSubscription" :
+			case "PutCommentcJS" :
+			case "GetListCommentcJS":
+				return [];
+			case 'BuildNews' :
+				return [
+					FrontendApplication::buildFilterGuest( $this->app() ),
+				];
+		}
+		
+		return null;
+	}
+	
 	public function executeIndex( HTTPRequest $request ) {
 		
 		$nombreNews       = $this->app->config()->get( 'nombre_news' );
@@ -55,10 +84,6 @@ class NewsController extends BackController {
 	}
 	
 	public function executeBuildNews( HTTPRequest $request ) {
-		if ( !$this->app()->user()->isAuthenticated() ) {
-			$this->app->user()->setFlash( 'Connectez vous pour profiter des fonctionnalités.' );
-			$this->app->httpResponse()->redirect( '/login' );
-		}
 		
 		if ( $request->getExists( 'id' ) ) { // L'identifiant de la news est transmis si on veut la modifier
 			/** @var NewcManager $NewcManager */
@@ -71,7 +96,7 @@ class NewsController extends BackController {
 			
 			/** @var Memberc $Memberc */
 			$Memberc = $this->app()->user()->getAttribute( 'Memberc' );
-			if ( $Memberc->id() == $Newc->fk_MMC() || $Memberc->isTypeAdmin() ) {
+			if ( $Memberc->id() == $Newc->fk_MMC() || $Memberc->isTypeAdmin() ) { // si le user connecté est l'auteur de la news ou s'il est admin
 				if ( $request->postData( 'submit' ) ) {
 					
 					$Newg = new Newg( [ 'fk_NNC' => $request->getData( 'id' ) ] );
@@ -220,7 +245,7 @@ class NewsController extends BackController {
 		}
 		
 		//$this->page()->addVar('href_refresh_comment_list',self::getLinkToRefreshCommentJS( $Newg ));
-		$this->page()->addVar('href_refresh_comment_list',self::getLinkToRefreshListCommentJS( $Newg , $Commentc_last));
+		$this->page()->addVar( 'href_refresh_comment_list', self::getLinkToRefreshListCommentJS( $Newg, $Commentc_last ) );
 		// ##
 	}
 	
@@ -268,7 +293,7 @@ class NewsController extends BackController {
 		/** @var Commentc $lastCommentc */
 		$last_commentc_id = $request->postData( 'lastcomment' );
 		$last_newc_id     = $request->getData( 'news' );
-			/** @var Commentc[] $comments */
+		/** @var Commentc[] $comments */
 		$Comment_a = $this->managers->getManagerOf( 'Commentc' )->getLastCommentcListUsingNewcIdAndCommentcId( $last_newc_id, $last_commentc_id );
 		$status    = 'valid';
 		
@@ -288,7 +313,6 @@ class NewsController extends BackController {
 		$this->page->addVar( 'Comment_a', $Comment_a );
 		$this->page->addVar( 'status', $status );
 	}
-	
 	
 	public function executeGetListCommentcJS( HTTPRequest $request ) {
 		
@@ -322,7 +346,6 @@ class NewsController extends BackController {
 		$this->page->addVar( 'Comment_a', $Comment_a );
 		$this->page->addVar( 'status', $status );
 	}
-	
 	
 	/**
 	 * @param HTTPRequest $request
@@ -500,6 +523,14 @@ class NewsController extends BackController {
 	}
 	
 	/**
+	 *
+	 * @return string
+	 */
+	public static function getLinkToBuildNews() {
+		return RouterFactory::getRouter( 'Frontend' )->getRouteFromAction( 'News', 'BuildNews' )->generateHref();
+	}
+	
+	/**
 	 * @param Newg $Newg
 	 *
 	 * @return string
@@ -534,7 +565,9 @@ class NewsController extends BackController {
 	 * @return string
 	 */
 	public static function getLinkToRefreshListCommentJS( Newg $Newg, Commentc $Commentc ) {
-		return RouterFactory::getRouter( 'Frontend' )->getRouteFromAction( 'News', 'GetListCommentcJS', array( 'news' => $Newg->fk_NNC(),
-																												  'lastcomment' => $Commentc->id()) )->generateHref();
+		return RouterFactory::getRouter( 'Frontend' )->getRouteFromAction( 'News', 'GetListCommentcJS', array(
+			'news'        => $Newg->fk_NNC(),
+			'lastcomment' => $Commentc->id(),
+		) )->generateHref();
 	}
 }

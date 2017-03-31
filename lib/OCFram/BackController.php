@@ -20,7 +20,7 @@ abstract class BackController extends ApplicationComponent {
 	protected $page = null;
 	protected $view = '';
 	protected $managers = null;
-	
+	protected $authorizer = null;
 	
 	public function __construct(Application $app, $module, $action)
 	{
@@ -32,6 +32,16 @@ abstract class BackController extends ApplicationComponent {
 		$this->setModule($module);
 		$this->setAction($action);
 		$this->setView($action);
+		$this->setAuthorizer(new Authorizer($app));
+		
+		if ($this instanceof Filterable) {
+			$filter = $this->getFilterableFilter();
+			if (null === $filter) {
+				throw new \Exception('Filter are not defined for action '.$action);
+			}
+			$this->authorizer()->addFilter( $this->getFilterableFilter() );
+		}
+		
 	}
 	
 	public function execute()
@@ -67,7 +77,6 @@ abstract class BackController extends ApplicationComponent {
 		{
 			throw new \InvalidArgumentException('L\'action doit être une chaine de caractères valide');
 		}
-		
 		$this->action = $action;
 	}
 	
@@ -90,4 +99,18 @@ abstract class BackController extends ApplicationComponent {
 		return $this->managers;
 	}
 	
+	
+	/**
+	 * @return Authorizer
+	 */
+	public function authorizer() {
+		return $this->authorizer;
+	}
+	
+	/**
+	 * @param Authorizer $authorizer
+	 */
+	public function setAuthorizer(Authorizer $authorizer ) {
+		$this->authorizer = $authorizer;
+	}
 }

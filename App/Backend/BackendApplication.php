@@ -8,11 +8,9 @@
 
 namespace App\Backend;
 
-use App\Frontend\FrontendApplication;
-use App\Frontend\Modules\Connexion\ConnexionController;
-use App\Frontend\Modules\News\NewsController;
+use App\Menu\Menu;
+use App\Menu\MenuElement;
 use \OCFram\Application;
-use \Entity\Memberc;
 
 
 class BackendApplication extends Application{
@@ -36,8 +34,20 @@ class BackendApplication extends Application{
 		$controller = $this->getController();
 		$controller->execute();
 		
+		
+		// ###### Generation du menu
+		$Menu = new Menu();
+		$Menu->addElement(new MenuElement('Accueil',\App\Frontend\Modules\News\NewsController::getLinkToIndex()));
+		$Menu->addElement( new MenuElement( 'Admin', \App\Backend\Modules\News\NewsController::getLinkToIndex() ) );
+		
+		$controller->page()->addVar('menu', $Menu->create());
+		
+		// ######
+		
+		
 		$this->httpResponse->setPage($controller->page());
 		$this->httpResponse->send();
 			
 	}
+	
 }

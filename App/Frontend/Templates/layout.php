@@ -27,20 +27,7 @@ $Router_backend = \OCFram\RouterFactory::getRouter('Backend');
 			</header>
 			
 			<nav>
-				<ul>
-					<li><a href="/">Accueil</a></li>
-					<?php if ($user->isAuthenticated()) { ?>
-						<?php if ($user->getAttribute('Memberc')->fk_MMY() == \Entity\Memberc::MMY_ADMIN): ?>
-							<li><a href=<?= $Router_backend->getRouteFromAction('News','index')->generateHref() ?>>Admin</a></li>
-						<?php endif; ?>
-						<li><a href=<?= $Router_frontend->getRouteFromAction('News','BuildNews')->generateHref() ?>>Ajouter une news</a></li>
-						<li><a href=<?= $Router_frontend->getRouteFromAction('Connexion','logout')->generateHref() ?>>Se déconnecter</a></li>
-						<li><?= htmlspecialchars($user->getAttribute('Memberc')->login())?></li>
-					<?php }else{ ?>
-						<li><a href=<?= $Router_frontend->getRouteFromAction('Connexion','index')->generateHref() ?>>Se connecter</a></li>
-						<li><a href=<?= $Router_frontend->getRouteFromAction('Subscription','BuildSubscription')->generateHref() ?>>S'inscrire</a></li>
-					<?php } ?>
-				</ul>
+				<?php if(isset($menu)): echo $menu; endif;?>
 			</nav>
 			
 			<div id="content-wrap">
