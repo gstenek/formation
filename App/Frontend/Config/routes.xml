@@ -3,7 +3,7 @@
 	<route url="/" module="News" action="index" ></route>
 	<route url="/news-([0-9]+)\.html" module="News" action="BuildNewsDetail" vars="id" alias="/news-[id].html"></route>
 	<route url="/news-insert.html" module="News" action="BuildNews" ></route>
-	<route url="/news-update-([0-9]+)\.html" module="News" action="BuildNews" vars="id" alias="/news-update-[id].html"></route>
+	<route url="/news-update-([0-9]+)\.html" module="News" action="BuildNewsUpdate" vars="id" alias="/news-update-[id].html"></route>
 	<route url="/comment-update-([0-9]+)\.html" module="News" action="BuildCommentForm" vars="news" alias="/comment-update-[news].html"></route>
 	<route url="/news/comment/process-([0-9]+)\.html" module="News" action="PutCommentc" vars="news" alias="/news/comment/process-[news].html"></route>
 	<route url="/news/comment/process-js-([0-9]+)\.html" module="News" action="PutCommentcJS" vars="news" alias="/news/comment/process-js-[news].html"></route>

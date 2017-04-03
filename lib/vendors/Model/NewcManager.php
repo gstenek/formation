@@ -15,11 +15,11 @@ use \Entity\Newc;
 abstract class NewcManager extends Manager
 {
 	/**
-	 * Méthode retournant une liste de news demandée
+	 * Méthode retournant une liste de news demandées
 	 *
 	 * @param $debut  int La première news à sélectionner
 	 * @param $limite int Le nombre de news à sélectionner
-	 * @param $newc_nne
+	 * @param $newc_nne int Etat des news demandées
 	 *
 	 * @return Newg[] La liste des news. Chaque entrée est une instance de News.
 	 */
@@ -28,7 +28,7 @@ abstract class NewcManager extends Manager
 	/**
 	 * Méthode retournant une news demandée
 	 *
-	 * @param $newc_id
+	 * @param $newc_id int
 	 *
 	 * @return Newg Une instance de News.
 	 * @internal param int $debut La première news à sélectionner
@@ -63,16 +63,6 @@ abstract class NewcManager extends Manager
 	 * @internal param Newc $news La news à ajouter
 	 */
 	abstract public function insertNewc(Newc $Newc);
-	
-	/**
-	 * Méthode permettant de modifier une news.
-	 *
-	 * @param Newc $Newc
-	 *
-	 * @return void
-	 * @internal param Newc $news la news à modifier
-	 */
-	abstract protected function modify(Newc $Newc);
 	
 	/**
 	 * Méthode permettant de supprimer une news.

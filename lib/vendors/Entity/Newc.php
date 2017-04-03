@@ -91,4 +91,18 @@ class Newc extends Entity {
 		$this->date_creation = $date_creation;
 	}
 	
+	/**
+	 * @return Entity|null
+	 */
+	public function Memberc() {
+		return $this->References('Memberc');
+	}
+	
+	/**
+	 * @param Memberc $Memberc
+	 */
+	public function setMemberc( Memberc $Memberc ) {
+		$this->setReferences($Memberc ,'Memberc');
+	}
+	
 }

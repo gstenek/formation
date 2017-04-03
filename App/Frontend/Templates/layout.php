@@ -5,8 +5,6 @@
  * Date: 27/02/2017
  * Time: 15:40
  */
-$Router_frontend = \OCFram\RouterFactory::getRouter('Frontend');
-$Router_backend = \OCFram\RouterFactory::getRouter('Backend');
 ?>
 <!DOCTYPE html>
 <html>

@@ -11,13 +11,13 @@
 	<script src="./js/jquery-3.2.0.min.js"></script>
 	<script src="./js/Comment/submit-process.js"></script>
 	<script src="./js/Comment/refresh-process.js"></script>
-	<p>Par <em><?= $Newg['Memberc'][ 'login' ] ?></em>, le <?= $Newg[ 'Newc' ][ 'date_creation' ] ?></p>
-	<h2><?= htmlspecialchars( $Newg->title() ) ?></h2>
-	<p><?= htmlspecialchars( $Newg->content() ) ?></p>
+	<p>Par <em><?= $Newg[ 'Newc' ]['Memberc'][ 'login' ] ?></em>, le <?= $Newg[ 'Newc' ][ 'date_creation' ] ?></p>
+	<h2><?= htmlspecialchars( $Newg['title'] ) ?></h2>
+	<p><?= nl2br(htmlspecialchars( $Newg['content'] )) ?></p>
 
-<?php if ( $Newg[ 'Newc' ][ 'date_creation' ] != $Newg->date_edition() ) : ?>
+<?php if ( $Newg[ 'Newc' ][ 'date_creation' ] != $Newg['date_edition'] ) : ?>
 	<p style="text-align: right;">
-		<small><em>Modifiée le <?= $Newg->date_edition() ?></em></small>
+		<small><em>Modifiée le <?= $Newg['date_edition'] ?> par <?= $Newg['Memberc'][ 'login' ] ?></em></small>
 	</p>
 <?php endif; ?>
 <?php if ( isset( $href_edit ) ): ?>
@@ -39,7 +39,7 @@
 													 ->generateHref() ?>>Supprimer</a>
 				
 				<?php endif; ?>
-				<p><?= htmlspecialchars( $Commentc[ 'content' ] ) ?></p>
+				<p><?= nl2br(htmlspecialchars( $Commentc[ 'content' ] )) ?></p>
 			</div>
 		<?php endforeach; ?>
 	</div>

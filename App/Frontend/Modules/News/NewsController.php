@@ -8,6 +8,7 @@
 
 namespace App\Frontend\Modules\News;
 
+use App\Filter\FilterMatchUserOrAdmin;
 use App\Frontend\FrontendApplication;
 use Entity\Memberc;
 use Entity\Newg;
@@ -26,6 +27,7 @@ use \FormBuilder\CommentFormBuilder;
 use \OCFram\FormHandler;
 
 class NewsController extends BackController implements Filterable {
+	
 	/**
 	 * Retourne un Filter ou une collection de filter en fonction de l'action courrante
 	 *
@@ -40,7 +42,26 @@ class NewsController extends BackController implements Filterable {
 			case "PutCommentcJS" :
 			case "GetListCommentcJS":
 				return [];
-			case 'BuildNews' :
+			case "BuildNewsUpdate":
+				$App = $this->app();
+				
+				/** @var Newc $Newc */
+				$Newc = $this->managers->getManagerOf( 'Newc' )->getNewcUsingNewcId( $App->httpRequest()->getData( 'id' ) );
+				if ( false === $Newc ) {
+					$App->httpResponse()->redirect( self::getLinkToIndex() );
+				}
+				
+				$Member = new Memberc(['id' => $Newc->fk_MMC()]);
+				return [
+					new FilterMatchUserOrAdmin(function() use($App, $Newc){
+						$App->user()->setFlash('Vous ne pouvez pas modiifer cette news');
+						$App->httpResponse()->redirect(self::getLinkToBuildNewsDetail($this->managers->getManagerOf( 'Newg' )->getNewgValidUsingNewcId( $Newc->id() )));
+					},
+						$App->user(),
+						false, // FALSE : si le user ne vérifie pas le filtre, il n'a pas accès à cette action
+						$Member)
+				];
+			case 'BuildNews' : // Si l'utilisateur courant est un visiteur, il n'a pas accès à cette action
 				return [
 					FrontendApplication::buildFilterGuest( $this->app() ),
 				];
@@ -62,7 +83,7 @@ class NewsController extends BackController implements Filterable {
 		$nombreCaracteres = $this->app->config()->get( 'nombre_caracteres' );
 		
 		// On ajoute une définition pour le titre.
-		$this->page->addVar( 'title', 'Liste des dernières news' );
+		$this->page->addVar( 'title', 'Liste des '.$nombreNews.' dernières news' );
 		
 		// On récupère le manager des news.
 		/** @var NewcManager $manager */
@@ -70,7 +91,7 @@ class NewsController extends BackController implements Filterable {
 		
 		// Cette ligne, vous ne pouviez pas la deviner sachant qu'on n'a pas encore touché au modèle.
 		// Contentez-vous donc d'écrire cette instruction, nous implémenterons la méthode ensuite.
-		$listeNews = $manager->getNewsListUsingNNE( -1, -1, Newc::NNE_VALID );
+		$listeNews = $manager->getNewsListUsingNNE( 0, $nombreNews, Newc::NNE_VALID );
 		
 		foreach ( $listeNews as $news ) {
 			if ( strlen( $news->content() ) > $nombreCaracteres ) {
@@ -80,7 +101,6 @@ class NewsController extends BackController implements Filterable {
 				$news->setContent( $debut );
 			}
 		}
-		
 		// On ajoute la variable $listeNews à la vue.
 		$this->page->addVar( 'listeNews', $listeNews );
 	}
@@ -90,77 +110,87 @@ class NewsController extends BackController implements Filterable {
 	 *
 	 * Ajout ou mise à jour d'une news
 	 *
-	 * TO DO : séparer l'ajout de la mise à jour d'une news en attribuant une route différente
 	 */
 	public function executeBuildNews( HTTPRequest $request ) {
 		
-		if ( $request->getExists( 'id' ) ) { // L'identifiant de la news est transmis si on veut la modifier
+		// on ajoute une nouvelle news
+		if ( $request->postData( 'submit' ) ) { // si le formulaire a été validée
+			$this->executePutNews( $request, new Newg() );
+		}
+		else { // Sinon on construit le formulaire
+			$this->page->addVar( 'title_form', 'Ajout d\'une news' );
+			$this->page->addVar( 'title', 'Ajout d\'une news' );
+			$formBuilder = new NewsFormBuilder( new Newg() );
+			$formBuilder->build();
+			
+			$form = $formBuilder->form();
+			
+			$this->page->addVar( 'form', $form->createView() );
+			$this->page->addVar( 'submit', 'Valider' );
+			$this->page->addVar( 'action', '' );
+		}
+	}
+	
+	/**
+	 * @param HTTPRequest $request
+	 *
+	 * 	Action permettant de modifier une news (accessible par l'admin ou le createur de la news)
+	 */
+	public function executeBuildNewsUpdate( HTTPRequest $request ) {
+		// L'identifiant de la news est transmis si on veut la modifier, s'il n'y en a pas on redirige
+		if ( !$request->getExists( 'id' ) ) {
+			$this->app->httpResponse()->redirect404();
+		}
+		
 			/** @var NewcManager $NewcManager */
 			$NewcManager = $this->managers->getManagerOf( 'Newc' );
 			/** @var Newc $Newc */
 			$Newc = $NewcManager->getNewcUsingNewcId( $request->getData( 'id' ) );
-			if ( false === $Newc ) {
+			if ( false === $Newc ) { // si la newc n'existe pas
 				$this->app->httpResponse()->redirect( self::getLinkToIndex() );
 			}
 			
 			/** @var Memberc $Memberc */
 			$Memberc = $this->app()->user()->getAttribute( 'Memberc' );
-			if ( $Memberc->id() == $Newc->fk_MMC() || $Memberc->isTypeAdmin() ) { // si le user connecté est l'auteur de la news ou s'il est admin
-				if ( $request->postData( 'submit' ) ) {
-					
-					$Newg = new Newg( [ 'fk_NNC' => $request->getData( 'id' ) ] );
-					$this->executePutNews( $request, $Newg );
-				}
-				$this->page->addVar( 'submit', 'Valider' );
-				$this->page->addVar( 'action', '' );
-				$this->page->addVar( 'title', 'Edition d\'une news' );
-				$this->page->addVar( 'title_form', 'Edition d\'une news' );
+		
+			// si le formulaire a été soumis
+			if ( $request->postData( 'submit' ) ) {
 				
-				/** @var Newg $Newg */
-				$Newg = $this->managers->getManagerOf( 'Newg' )->getNewgValidUsingNewcId( $Newc->id() );
-				if ( false === $Newg ) {
-					$this->app->httpResponse()->redirect( self::getLinkToIndex() );
-				}
-				
-				$Memberc = $this->managers->getManagerOf( 'Memberc' )->getMembercUsingId( $Newg->fk_MMC() );
-				
-				
-				if ( $Newg ) {
-					$formBuilder = new NewsFormBuilder( $Newg );
-					$formBuilder->build();
-					
-					$form = $formBuilder->form();
-					
-					$infos = 'Dernière édition le ' . $Newg->date_edition() . ' par ' . $Memberc->login();
-					$this->page->addVar( 'infos', $infos );
-					
-					$this->page->addVar( 'form', $form->createView() );
-				}
+				$Newg = new Newg( [ 'fk_NNC' => $request->getData( 'id' ) ] );
+				$this->executePutNews( $request, $Newg );
 			}
-			else {
-				$this->app->httpResponse()->redirect( '/news-' . $request->getData( 'id' ) . '.html' );
-			}
-		}
-		else { // Sinon on ajoute une nouvelle news
 			
-			if ( $request->postData( 'submit' ) ) { // si le formulaire a été validée
-				$this->executePutNews( $request, new Newg() );
+			$this->page->addVar( 'submit', 'Valider' );
+			$this->page->addVar( 'action', '' );
+			$this->page->addVar( 'title', 'Edition d\'une news' );
+			$this->page->addVar( 'title_form', 'Edition d\'une news' );
+			
+			/** @var Newg $Newg */
+			$Newg = $this->managers->getManagerOf( 'Newg' )->getNewgValidUsingNewcId( $Newc->id() );
+			
+			if ( false === $Newg ) {
+				$this->app->httpResponse()->redirect( self::getLinkToIndex() );
 			}
-			else { // Sinon on construit le formulaire
-				$this->page->addVar( 'title_form', 'Ajout d\'une news' );
-				$this->page->addVar( 'title', 'Ajout d\'une news' );
-				$formBuilder = new NewsFormBuilder( new Newg() );
-				$formBuilder->build();
-				
-				$form = $formBuilder->form();
-				
-				$this->page->addVar( 'form', $form->createView() );
-				$this->page->addVar( 'submit', 'Valider' );
-				$this->page->addVar( 'action', '' );
-			}
-		}
+			
+			$Memberc = $this->managers->getManagerOf( 'Memberc' )->getMembercUsingId( $Newg->fk_MMC() );
+		
+			$formBuilder = new NewsFormBuilder( $Newg );
+			$formBuilder->build();
+			
+			$form = $formBuilder->form();
+			
+			$infos = 'Dernière édition le ' . $Newg->date_edition() . ' par ' . $Memberc->login();
+			$this->page->addVar( 'infos', $infos );
+			
+			$this->page->addVar( 'form', $form->createView() );
 	}
 	
+	/**
+	 * @param HTTPRequest $request
+	 * @param Newg        $Newg
+	 *
+	 * 	Tente d'insérer ou updater une news
+	 */
 	private function executePutNews( HTTPRequest $request, Newg $Newg ) {
 		
 		$Newg->setTitle( $request->postData( 'title' ) );
@@ -190,6 +220,8 @@ class NewsController extends BackController implements Filterable {
 					$this->app->httpResponse()->redirect( '/news-' . $form->entity()->fk_NNC() . '.html' );
 				}
 			}
+			$this->page->addVar( 'title', 'Edition d\'une news' );
+			$this->page->addVar( 'title_form', 'Edition d\'une news' );
 		}
 		else { //si on ajoute une nouvelle news
 			
@@ -200,10 +232,10 @@ class NewsController extends BackController implements Filterable {
 				$this->app->user()->setFlash( 'News bien ajoutée !' );
 				$this->app->httpResponse()->redirect( '/news-' . $form->entity()->fk_NNC() . '.html' );
 			}
+			$this->page->addVar( 'title_form', 'Ajout d\'une news' );
+			$this->page->addVar( 'title', 'Ajout d\'une news' );
 		}
 		
-		$this->page->addVar( 'title_form', 'Ajout d\'une news' );
-		$this->page->addVar( 'title', 'Ajout d\'une news' );
 		$this->page->addVar( 'form', $form->createView() );
 		$this->page->addVar( 'submit', 'Valider' );
 		$this->page->addVar( 'action', '' );
@@ -217,6 +249,7 @@ class NewsController extends BackController implements Filterable {
 		}
 		
 		$comments = $this->managers->getManagerOf( 'Commentc' )->getCommentcListUsingNewcId( $Newg->fk_NNC() );
+		$Newg->Newc()->setMemberc($this->managers->getManagerOf( 'Memberc' )->getMembercUsingId( $Newg->Newc()->fk_MMC()));
 		$this->page->addVar( 'title', $Newg->title() );
 		$this->page->addVar( 'Newg', $Newg );
 		$this->page->addVar( 'comments', $comments );
@@ -248,7 +281,7 @@ class NewsController extends BackController implements Filterable {
 		if ( $this->app->user()->isAuthenticated() ) {
 			$Memberc = $this->app->user()->getAttribute( 'Memberc' );
 			if ( $Memberc->id() === $Newg->Newc()->fk_MMC() || $Memberc->isTypeAdmin() ) {
-				$this->page()->addVar( 'href_edit', RouterFactory::getRouter( 'Frontend' )->getRouteFromAction( 'News', 'BuildNews', [ 'id' => $Newg[ 'Newc' ][ 'id' ] ] )
+				$this->page()->addVar( 'href_edit', RouterFactory::getRouter( 'Frontend' )->getRouteFromAction( 'News', 'BuildNewsUpdate', [ 'id' => $Newg[ 'Newc' ][ 'id' ] ] )
 																 ->generateHref() );
 			}
 		}

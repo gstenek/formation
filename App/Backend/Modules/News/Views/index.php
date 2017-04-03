@@ -17,7 +17,7 @@ $Router_frontend = \OCFram\RouterFactory::getRouter('Frontend');
 	foreach ($listeNews as $Newg):
 		$Newc = $Newg->References('Newc');
 		$Memberc = $Newg->References('Memberc');
-		echo '<tr><td>', htmlspecialchars($Memberc->login()), '</td><td>', htmlspecialchars($Newg->title()), '</td><td>le ', htmlspecialchars($Newc->date_creation()), '</td><td>', ($Newc->date_creation() == $Newg->date_edition() ? '-' : 'le '.$Newg->date_edition()), '</td><td><a href="'.$Router_frontend->getRouteFromAction('News','BuildNews',array('id' => $Newc->id()))->generateHref().'"><img src="/images/update.png" alt="Modifier" /></a> <a href="', $Router_backend->getRouteFromAction('News', 'ClearNews', array('id' => $Newc->id()))->generateHref(), '"><img src="/images/delete.png" alt="Supprimer" /></a></td></tr>', "\n";
+		echo '<tr><td>', htmlspecialchars($Memberc->login()), '</td><td>', htmlspecialchars($Newg->title()), '</td><td>le ', htmlspecialchars($Newc->date_creation()), '</td><td>', ($Newc->date_creation() == $Newg->date_edition() ? '-' : 'le '.$Newg->date_edition()), '</td><td><a href="'.$Router_frontend->getRouteFromAction('News','BuildNewsUpdate',array('id' => $Newc->id()))->generateHref().'"><img src="/images/update.png" alt="Modifier" /></a> <a href="', $Router_backend->getRouteFromAction('News', 'ClearNews', array('id' => $Newc->id()))->generateHref(), '"><img src="/images/delete.png" alt="Supprimer" /></a></td></tr>', "\n";
 	endforeach;
 	?>
 </table>

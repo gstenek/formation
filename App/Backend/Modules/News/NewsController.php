@@ -11,6 +11,7 @@ namespace App\Backend\Modules\News;
 use Entity\Newc;
 use Entity\Newg;
 use FormBuilder\NewsFormBuilder;
+use Model\CommentcManager;
 use \OCFram\BackController;
 use \OCFram\HTTPRequest;
 use \Entity\News;
@@ -95,9 +96,8 @@ class NewsController extends BackController
 			if ($formHandler->process())
 			{
 				$this->app->user()->setFlash('Commentaire  bien modifé !');
-				//$this->app->httpResponse()->redirect( '/admin/' );
 				$Newg =  $this->managers->getManagerOf('Newg')->getNewgUsingNewgId($form->entity()->fk_NNG());
-				$this->app->httpResponse()->redirect('/news-'.$Newg->fk_NNC().'.html');
+				$this->app->httpResponse()->redirect(\App\Frontend\Modules\News\NewsController::getLinkToBuildNewsDetail($Newg));
 			}
 		}
 		
@@ -113,7 +113,6 @@ class NewsController extends BackController
 		$newsId = $request->getData('id');
 		
 		$this->managers->getManagerOf('Newc')->updatefk_NNEOfNewcUsingNewcIdAndNNE($newsId, Newc::NNE_INVALID);
-		//$this->managers->getManagerOf('Comments')->deleteFromNews($newsId);
 		
 		$this->app->user()->setFlash('La news a bien été supprimée !');
 		
@@ -122,15 +121,19 @@ class NewsController extends BackController
 	
 	public function executeClearComment(HTTPRequest $request)
 	{
-		$Commentc = $this->managers->getManagerOf('Commentc')->getCommentcUsingCommentcId($request->getData('id'));
+		/** @var CommentcManager $Manager_Commentc */
+		$Manager_Commentc = $this->managers->getManagerOf('Commentc');
+		
+		/** @var Commentc $Commentc */
+		$Commentc = $Manager_Commentc->getCommentcUsingCommentcId($request->getData('id'));
 		$Commentc->setFk_NCE(Commentc::NCE_INVALID);
-		$this->managers->getManagerOf('Commentc')->save($Commentc);
+		$Manager_Commentc->save($Commentc);
 		$this->app->user()->setFlash('Le commentaire a bien été supprimé !');
 		
+		/** @var Newg $Newg */
 		$Newg =  $this->managers->getManagerOf('Newg')->getNewgUsingNewgId($Commentc->fk_NNG());
 		$this->app->httpResponse()->redirect('/news-'.$Newg->fk_NNC().'.html');
 	}
-	
 	
 	/**
 	 * @return string

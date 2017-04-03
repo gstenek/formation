@@ -14,17 +14,34 @@ abstract class Filter {
 	
 	protected $redirect;
 	protected $User;
+	protected $expected;
 	
 	/**
 	 * Filter constructor.
 	 *
 	 * @param string|callable $redirect_or_callback Url de redirection ou fonction de callback
-	 * @param User  $User
+	 * @param User            $User
+	 * @param bool            $expected résultat souhaité pour le check du filtre
 	 */
-	public function __construct($redirect_or_callback, User $User)
+	public function __construct($redirect_or_callback, User $User, $expected = true)
 	{
 		$this->setRedirect($redirect_or_callback);
 		$this->setUser($User);
+		$this->setExpected($expected);
+	}
+	
+	/**
+	 * @return mixed
+	 */
+	public function expected() {
+		return $this->expected;
+	}
+	
+	/**
+	 * @param mixed $expected
+	 */
+	public function setExpected($expected ) {
+		$this->expected = $expected;
 	}
 	
 	/**

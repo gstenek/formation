@@ -81,7 +81,6 @@ class NewgManagerPDO extends NewgManager
 			$Newg = new Newg($result);
 			$Newg->setNewc(new Newc($result));
 			$Newg->setMemberc(new Memberc($result));
-			//$Newg->setFk_NNC(new Newc($result));
 			return $Newg;
 		}
 		

@@ -55,7 +55,7 @@ class Authorizer extends ApplicationComponent {
 		}
 		/** @var Filter $Filter */
 		foreach ( $this->Filter_a as $Filter ) {
-			if($Filter->check()){
+			if($Filter->expected() == $Filter->check()){
 				$redirect = $Filter->redirect();
 				if (is_callable($redirect)) {
 					$redirect();

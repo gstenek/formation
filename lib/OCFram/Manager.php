@@ -11,6 +11,7 @@ namespace OCFram;
 
 
 abstract class Manager {
+	
 	protected $dao;
 	protected $Managers;
 	

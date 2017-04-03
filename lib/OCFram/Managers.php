@@ -15,6 +15,8 @@ class Managers
 {
 	protected $api = null;
 	protected $dao = null;
+	
+	/** @var Manager[]  */
 	protected $managers = [];
 	
 	public function __construct($api, $dao)

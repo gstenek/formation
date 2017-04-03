@@ -14,21 +14,32 @@ use Entity\Newg;
 
 class NewcManagerPDO extends NewcManager
 {
+	/**
+	 * Méthode retournant une liste de news demandées
+	 *
+	 * @param $debut  int La première news à sélectionner
+	 * @param $limite int Le nombre de news à sélectionner
+	 * @param $newc_nne int Etat des news demandées
+	 *
+	 * @return Newg[] La liste des news. Chaque entrée est une instance de News.
+	 */
 	public function getNewsListUsingNNE( $debut = -1, $limite = -1, $newc_nne ) {
 		
-		$q = $this->dao->prepare('SELECT *
-									FROM t_new_newc
-									INNER JOIN t_new_newg ON NNC_id = NNG_fk_NNC
-									INNER JOIN t_mem_memberc ON NNC_fk_MMC = MMC_id
-									WHERE NNC_fk_NNE = :NNC_fk_NNE
-									AND NNG_fk_NNE = :NNG_fk_NNE
-									ORDER BY NNG_date_edition DESC');
+		$query = 'SELECT * 
+					FROM t_new_newc	
+					INNER JOIN t_new_newg ON NNC_id = NNG_fk_NNC 
+					INNER JOIN t_mem_memberc ON NNC_fk_MMC = MMC_id 
+					WHERE NNC_fk_NNE = :NNC_fk_NNE 
+					AND NNG_fk_NNE = :NNG_fk_NNE 
+					ORDER BY NNG_date_edition DESC';
+		
 		
 		if ($debut != -1 || $limite != -1)
 		{
-			$q .= ' LIMIT '.(int) $limite.' OFFSET '.(int) $debut;
+			$query .= ' LIMIT '.(int) $limite.' OFFSET '.(int) $debut;
 		}
 		
+		$q = $this->dao->prepare($query);
 		$q->bindValue(':NNC_fk_NNE', $newc_nne);
 		$q->bindValue(':NNG_fk_NNE', Newg::NNE_VALID);
 		$q->execute();
@@ -48,8 +59,16 @@ class NewcManagerPDO extends NewcManager
 		return $news;
 	}
 	
+	/**
+	 * Méthode retournant une news précise.
+	 * @param $newc_id int L'identifiant de la news à récupérer
+	 * @return Newc|bool La news demandée
+	 */
 	public function getNewcUsingNewcId( $newc_id ) {
-		$q = $this->dao->prepare('SELECT NNC_fk_MMC, NNC_fk_NNE, NNC_date_creation FROM t_new_newc WHERE NNC_id = :id AND NNC_fk_NNE = :NNE');
+		$q = $this->dao->prepare('SELECT NNC_fk_MMC, NNC_fk_NNE, NNC_date_creation 
+								FROM t_new_newc 
+								WHERE NNC_id = :id 
+								AND NNC_fk_NNE = :NNE');
 		$q->bindValue(':id', $newc_id);
 		$q->bindValue(':NNE', Newc::NNE_VALID);
 		$q->execute();
@@ -64,12 +83,26 @@ class NewcManagerPDO extends NewcManager
 		return $Newc;
 	}
 	
+	/**
+	 * Méthode renvoyant le nombre de news total ayant l'état précisé.
+	 * @param $newc_nne
+	 *
+	 * @return int
+	 */
 	public function countNewcUsingNNE($newc_nne) {
-		return $this->dao->query('SELECT COUNT(*) FROM t_new_newc WHERE NNC_fk_NNE ='.$newc_nne)->fetchColumn();
+		return $this->dao->query('SELECT COUNT(*) 
+								FROM t_new_newc 
+								WHERE NNC_fk_NNE ='.$newc_nne)->fetchColumn();
 	}
 	
+	/**
+	 * @param Newc $Newc
+	 *
+	 * Insertion d'une Newc
+	 */
 	public function insertNewc( Newc $Newc ) {
-		$requete = $this->dao->prepare('INSERT INTO t_new_newc(NNC_fk_MMC, NNC_fk_NNE, NNC_date_creation) VALUES (:auteur, :etat, :date_creation)');
+		$requete = $this->dao->prepare('INSERT INTO t_new_newc(NNC_fk_MMC, NNC_fk_NNE, NNC_date_creation) 
+										VALUES (:auteur, :etat, :date_creation)');
 		
 		$requete->bindValue(':etat', $Newc->fk_NNE());
 		$requete->bindValue(':auteur', $Newc->fk_MMC());
@@ -78,14 +111,6 @@ class NewcManagerPDO extends NewcManager
 		$requete->execute();
 		
 		$Newc->setId($this->dao->lastInsertId());
-	}
-	
-	protected function modify( Newc $newc ) {
-		// TODO: Implement modify() method.
-	}
-	
-	public function delete( $id ) {
-		// TODO: Implement delete() method.
 	}
 
 	
@@ -99,7 +124,9 @@ class NewcManagerPDO extends NewcManager
 	 * @internal param int $id L'identifiant de la news à supprimer
 	 */
 	public function updatefk_NNEOfNewcUsingNewcIdAndNNE( $newc_id, $newc_nne ) {
-		$requete = $this->dao->prepare('UPDATE t_new_newc SET NNC_fk_NNE = :NNE WHERE NNC_id = :id');
+		$requete = $this->dao->prepare('UPDATE t_new_newc 
+										SET NNC_fk_NNE = :NNE 
+										WHERE NNC_id = :id');
 		
 		$requete->bindValue(':id', $newc_id, \PDO::PARAM_INT);
 		$requete->bindValue(':NNE', $newc_nne);
