@@ -13,19 +13,14 @@ use Entity\Memberc;
 use Entity\Newg;
 use FormBuilder\NewsFormBuilder;
 use Model\NewcManager;
-use OCFram\Application;
-use OCFram\Authorizer;
 use \OCFram\BackController;
 use OCFram\Filter;
 use OCFram\Filterable;
-use OCFram\FilterGuest;
 use \OCFram\HTTPRequest;
 use \Entity\Commentc;
 use \Entity\Newc;
 use \OCFram\Form;
 use OCFram\RouterFactory;
-use \OCFram\StringField;
-use \OCFram\TextField;
 use \OCFram\Field;
 use \FormBuilder\CommentFormBuilder;
 use \OCFram\FormHandler;
@@ -54,6 +49,13 @@ class NewsController extends BackController implements Filterable {
 		return null;
 	}
 	
+	/**
+	 * @param HTTPRequest $request
+	 *
+	 * Affiche une liste de news
+	 *
+	 * TO DO: ajouter la possibilité d'afficher un nombre limité de news
+	 */
 	public function executeIndex( HTTPRequest $request ) {
 		
 		$nombreNews       = $this->app->config()->get( 'nombre_news' );
@@ -83,6 +85,13 @@ class NewsController extends BackController implements Filterable {
 		$this->page->addVar( 'listeNews', $listeNews );
 	}
 	
+	/**
+	 * @param HTTPRequest $request
+	 *
+	 * Ajout ou mise à jour d'une news
+	 *
+	 * TO DO : séparer l'ajout de la mise à jour d'une news en attribuant une route différente
+	 */
 	public function executeBuildNews( HTTPRequest $request ) {
 		
 		if ( $request->getExists( 'id' ) ) { // L'identifiant de la news est transmis si on veut la modifier
@@ -281,6 +290,8 @@ class NewsController extends BackController implements Filterable {
 		$this->page->addVar( 'js_action', self::getLinkToPutCommentJS( $Newg ) );
 	}
 	
+	
+	// TO DO : Supprimer car ramplacée par GetListCommentJS, validation requise
 	public function executeUpdateListCommentcJS( HTTPRequest $request ) {
 		
 		//sleep(32);
@@ -314,9 +325,13 @@ class NewsController extends BackController implements Filterable {
 		$this->page->addVar( 'status', $status );
 	}
 	
+	// nouvelle version de la fonciton permettant le refresh
+	/**
+	 * @param HTTPRequest $request
+	 *
+	 *  Fonction appelée par le script JS de refresh d'une liste de commentaire
+	 */
 	public function executeGetListCommentcJS( HTTPRequest $request ) {
-		
-		//sleep(32);
 		
 		if ( !$request->getExists( 'lastcomment' ) || !$request->getExists( 'news' ) ) {
 			return;
@@ -457,6 +472,11 @@ class NewsController extends BackController implements Filterable {
 		return $formHandler;
 	}
 	
+	/**
+	 * @param HTTPRequest $request
+	 *
+	 * 	TO DO : offrir la possibilité aux users de modifier leur commentaire | supprimer la fonction
+	 */
 	public function executeBuildCommentForm( HTTPRequest $request ) {
 		if ( $request->getExists( 'id' ) ) { // L'identifiant du com est transmis si on veut le modifier
 			
@@ -508,6 +528,7 @@ class NewsController extends BackController implements Filterable {
 	
 	/**
 	 * @return string
+	 * Lien vers l'index (liste de news)
 	 */
 	public static function getLinkToIndex() {
 		return RouterFactory::getRouter( 'Frontend' )->getRouteFromAction( 'News', 'index' )->generateHref();

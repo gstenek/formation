@@ -35,12 +35,11 @@ class FrontendApplication extends Application{
 		// TEST SOUS MENUS
 		/*$Menu_sub = new Menu();
 		$Menu_sub->addElement(new MenuElement( 'Toto', '#' ) );
-		$Menu_sub->addElement(new MenuElement( 'Titi', '#' ) );
-		*/
+		$Menu_sub->addElement(new MenuElement( 'Titi', '#' ) );*/
+		
 		
 		// ###### Generation du menu
-		$Menu = new Menu();
-		$Menu->addElement(new MenuElement('Accueil',\App\Frontend\Modules\News\NewsController::getLinkToIndex()));
+		$Menu = new Menu(new MenuElement('Accueil',\App\Frontend\Modules\News\NewsController::getLinkToIndex()));
 		
 		// TEST SOUS MENU
 		//$Menu->addElement(new MenuElement('Accueil',\App\Frontend\Modules\News\NewsController::getLinkToIndex(),$Menu_sub));
@@ -52,14 +51,14 @@ class FrontendApplication extends Application{
 			}, $this->user() ),
 			new FilterGuest( function() use ( $Menu ) {
 				
-				$Menu->addElement( new MenuElement( 'Se connecter', ConnexionController::getLinkToIndex() ) );
-				$Menu->addElement( new MenuElement( 'S\'inscrire', SubscriptionController::getLinkToSubscription() ) );
+				$Menu->addElement( [new MenuElement( 'Se connecter', ConnexionController::getLinkToIndex() ),
+									new MenuElement( 'S\'inscrire', SubscriptionController::getLinkToSubscription() )] );
 			}, $this->user() ),
 			new FilterUser( function() use ( $Menu ) {
 				
-				$Menu->addElement( new MenuElement( 'Se déconnecter', ConnexionController::getLinkToLogout() ) );
-				$Menu->addElement( new MenuElement( 'Ajouter une News', \App\Frontend\Modules\News\NewsController::getLinkToBuildNews() ) );
-				$Menu->addElement( new MenuElement( $this->user()->getAttribute('Memberc')->login() , '#' ) );
+				$Menu->addElement( [new MenuElement( 'Se déconnecter', ConnexionController::getLinkToLogout() ),
+									new MenuElement( 'Ajouter une News', \App\Frontend\Modules\News\NewsController::getLinkToBuildNews() ),
+									new MenuElement( $this->user()->getAttribute('Memberc')->login() , '#' )] );
 			}, $this->user() ),
 		];
 				

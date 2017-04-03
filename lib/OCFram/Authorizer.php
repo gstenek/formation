@@ -23,11 +23,17 @@ class Authorizer extends ApplicationComponent {
 	/** @var Filter[] */
 	protected $Filter_a = []; // tableau de filter
 	
+	/** @param  Application $App */
 	public function __construct(Application $App) {
 		
 		parent::__construct($App);
 	}
 	
+	/**
+	 * @param Filter | Filter[] $Filter
+	 *
+	 * @throws \Exception
+	 */
 	public function addFilter($Filter) {
 		if (!is_array($Filter)) {
 			$Filter = [$Filter];

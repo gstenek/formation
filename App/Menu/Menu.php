@@ -6,7 +6,7 @@
  * Date: 31/03/2017
  * Time: 14:32
  *
- *
+ * Générateur de menu
  */
 
 namespace App\Menu;
@@ -15,12 +15,19 @@ class Menu {
 	/** @var MenuElement[] */
 	protected $Element_a = [];
 	
-	public function __construct() {
-		
+	/**
+	 * Menu constructor.
+	 *
+	 * @param MenuElement | MenuElement[] $Element
+	 */
+	public function __construct($Element = []) {
+		if(! empty($Element)){
+			$this->addElement($Element);
+		}
 	}
 	
 	/**
-	 * @return string    Le rendu html du menu crée
+	 * @return string Le rendu html du menu crée
 	 */
 	public function create() {
 		$builtHtml = '<ul>';
@@ -43,14 +50,17 @@ class Menu {
 	}
 	
 	/**
-	 * @param MenuElement $Element
+	 * @param MenuElement | MenuElement[] $Element
 	 *
 	 * @return void
 	 * Ajout d'un item au menu
 	 */
-	public function addElement( MenuElement $Element ) {
+	public function addElement( $Element ) {
 		
-		$this->Element_a[] = $Element;
+		if(!is_array($Element)){
+			$Element = [$Element];
+		}
 		
+		$this->Element_a = array_merge($this->Element_a, $Element);
 	}
 }

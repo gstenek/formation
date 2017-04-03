@@ -5,6 +5,8 @@
  * User: gstenek
  * Date: 31/03/2017
  * Time: 15:01
+ *
+ * Item d'un menu
  */
 namespace App\Menu;
 

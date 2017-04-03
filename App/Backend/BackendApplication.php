@@ -36,9 +36,8 @@ class BackendApplication extends Application{
 		
 		
 		// ###### Generation du menu
-		$Menu = new Menu();
-		$Menu->addElement(new MenuElement('Accueil',\App\Frontend\Modules\News\NewsController::getLinkToIndex()));
-		$Menu->addElement( new MenuElement( 'Admin', \App\Backend\Modules\News\NewsController::getLinkToIndex() ) );
+		$Menu = new Menu( [new MenuElement('Accueil',\App\Frontend\Modules\News\NewsController::getLinkToIndex()),
+						   new MenuElement( 'Admin', \App\Backend\Modules\News\NewsController::getLinkToIndex()) ]);
 		
 		$controller->page()->addVar('menu', $Menu->create());
 		

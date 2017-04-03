@@ -27,9 +27,11 @@ abstract class Application {
 		$this->config = new Config($this);
 	}
 	
+	/**
+	 * @return BackController
+	 */
 	public function getController()
 	{
-		
 		$router = RouterFactory::getRouter($this->name());
 		
 		try
@@ -48,10 +50,10 @@ abstract class Application {
 		
 		// On ajoute les variables de l'URL au tableau $_GET.
 		$_GET = array_merge($_GET, $matchedRoute->vars());
-		// On instancie le contrôleur.
 		
 		$controllerClass = 'App\\'.$this->name.'\\Modules\\'.$matchedRoute->module().'\\'.$matchedRoute->module().'Controller';
 		
+		// On instancie le contrôleur.
 		/** @var BackController $Controller */
 		$Controller =  new $controllerClass($this, $matchedRoute->module(), $matchedRoute->action());
 	
@@ -62,11 +64,17 @@ abstract class Application {
 	
 	abstract public function run();
 	
+	/**
+	 * @return HTTPRequest
+	 */
 	public function httpRequest()
 	{
 		return $this->httpRequest;
 	}
 	
+	/**
+	 * @return HTTPResponse
+	 */
 	public function httpResponse()
 	{
 		return $this->httpResponse;
