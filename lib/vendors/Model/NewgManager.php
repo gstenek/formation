@@ -11,8 +11,9 @@ namespace Model;
 use Entity\Newc;
 use \OCFram\Manager;
 use \Entity\Newg;
+use OCFram\ManagerData;
 
-abstract class NewgManager extends Manager {
+abstract class NewgManager extends ManagerData {
 	/**
 	 * Méthode retournant une news précise.
 	 *

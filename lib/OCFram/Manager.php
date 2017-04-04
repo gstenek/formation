@@ -12,12 +12,4 @@ namespace OCFram;
 
 abstract class Manager {
 	
-	protected $dao;
-	protected $Managers;
-	
-	public function __construct($dao, Managers $Managers)
-	{
-		$this->dao = $dao;
-		$this->Managers = $Managers;
-	}
 }

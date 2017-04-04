@@ -11,8 +11,9 @@ namespace Model;
 use MongoDB\Driver\Exception\RuntimeException;
 use \OCFram\Manager;
 use \Entity\Commentc;
+use OCFram\ManagerData;
 
-abstract class CommentcManager extends Manager
+abstract class CommentcManager extends ManagerData
 {
 	/**
 	 * Méthode permettant d'ajouter un commentaire

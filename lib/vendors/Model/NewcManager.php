@@ -11,8 +11,9 @@ namespace Model;
 use Entity\Newg;
 use \OCFram\Manager;
 use \Entity\Newc;
+use OCFram\ManagerData;
 
-abstract class NewcManager extends Manager
+abstract class NewcManager extends ManagerData
 {
 	/**
 	 * Méthode retournant une liste de news demandées
@@ -48,7 +49,8 @@ abstract class NewcManager extends Manager
 	/**
 	 * Méthode renvoyant le nombre de news total.
 	 *
-	 * @param $newc_nne
+	 * @param      $newc_nne
+	 *
 	 *
 	 * @return int
 	 */
@@ -74,4 +76,5 @@ abstract class NewcManager extends Manager
 	 * @internal param int $id L'identifiant de la news à supprimer
 	 */
 	abstract public function updatefk_NNEOfNewcUsingNewcIdAndNNE($newc_id, $newc_nne);
+	
 }

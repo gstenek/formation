@@ -18,6 +18,7 @@ class Managers
 	
 	/** @var Manager[]  */
 	protected $managers = [];
+	protected $managers_cached = [];
 	
 	public function __construct($api, $dao)
 	{
@@ -25,7 +26,7 @@ class Managers
 		$this->dao = $dao;
 	}
 	
-	public function getManagerOf($module)
+	public function getManagerOf($module, $use_cache = true)
 	{
 		if (!is_string($module) || empty($module))
 		{
@@ -39,6 +40,15 @@ class Managers
 			$this->managers[$module] = new $manager($this->dao, $this);
 		}
 		
-		return $this->managers[$module];
+		if (!$use_cache) {
+			return $this->managers[ $module ];
+		}
+		
+		
+		if (!isset($this->managers_cached[$module])) {
+			$this->managers_cached[$module] = new ManagerCached($this->managers[$module]);
+		}
+		return $this->managers_cached[$module];
 	}
+	
 }

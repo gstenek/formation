@@ -33,7 +33,6 @@ class NewcManagerPDO extends NewcManager
 					AND NNG_fk_NNE = :NNG_fk_NNE 
 					ORDER BY NNG_date_edition DESC';
 		
-		
 		if ($debut != -1 || $limite != -1)
 		{
 			$query .= ' LIMIT '.(int) $limite.' OFFSET '.(int) $debut;
@@ -85,11 +84,14 @@ class NewcManagerPDO extends NewcManager
 	
 	/**
 	 * Méthode renvoyant le nombre de news total ayant l'état précisé.
-	 * @param $newc_nne
+	 *
+	 * @param      $newc_nne
+	 *
 	 *
 	 * @return int
 	 */
 	public function countNewcUsingNNE($newc_nne) {
+		
 		return $this->dao->query('SELECT COUNT(*) 
 								FROM t_new_newc 
 								WHERE NNC_fk_NNE ='.$newc_nne)->fetchColumn();

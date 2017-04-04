@@ -10,8 +10,9 @@ namespace Model;
 
 use \OCFram\Manager;
 use \Entity\Memberc;
+use OCFram\ManagerData;
 
-abstract class MembercManager extends Manager{
+abstract class MembercManager extends ManagerData {
 	/**
 	 * Méthode permettant d'ajouter un member
 	 *

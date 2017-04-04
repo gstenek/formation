@@ -13,6 +13,7 @@ use App\Frontend\FrontendApplication;
 use Entity\Memberc;
 use Entity\Newg;
 use FormBuilder\NewsFormBuilder;
+use Model\CacheManagerPDO;
 use Model\NewcManager;
 use \OCFram\BackController;
 use OCFram\Filter;
@@ -21,6 +22,8 @@ use \OCFram\HTTPRequest;
 use \Entity\Commentc;
 use \Entity\Newc;
 use \OCFram\Form;
+use OCFram\Manager;
+use OCFram\ManagerCached;
 use OCFram\RouterFactory;
 use \OCFram\Field;
 use \FormBuilder\CommentFormBuilder;
@@ -86,12 +89,15 @@ class NewsController extends BackController implements Filterable {
 		$this->page->addVar( 'title', 'Liste des '.$nombreNews.' dernières news' );
 		
 		// On récupère le manager des news.
-		/** @var NewcManager $manager */
-		$manager = $this->managers->getManagerOf( 'Newc' );
+		/** @var NewcManager $NewsManagerCached */
+		$NewsManagerCached = $this->managers->getManagerOf( 'Newc' );
 		
+		/** @var NewcManager $NewsManagerNotCached */
+		$NewsManagerNotCached = $this->managers->getManagerOf( 'Newc' , false );
 		// Cette ligne, vous ne pouviez pas la deviner sachant qu'on n'a pas encore touché au modèle.
 		// Contentez-vous donc d'écrire cette instruction, nous implémenterons la méthode ensuite.
-		$listeNews = $manager->getNewsListUsingNNE( 0, $nombreNews, Newc::NNE_VALID );
+		$listeNews = $NewsManagerCached->getNewsListUsingNNE( 0, $nombreNews, Newc::NNE_VALID );
+		$listeNews = $NewsManagerNotCached->getNewsListUsingNNE( 0, $nombreNews, Newc::NNE_VALID );
 		
 		foreach ( $listeNews as $news ) {
 			if ( strlen( $news->content() ) > $nombreCaracteres ) {
